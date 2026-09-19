@@ -1,0 +1,122 @@
+{
+  "system": {
+    "name": "CrewAI Conversational RAG",
+    "version": "1.0.0",
+    "description": "A multi-agent Retrieval-Augmented Generation (RAG) system built on CrewAI that answers questions grounded in a structured knowledge base.",
+    "architecture": "Sequential multi-agent pipeline: Retriever → Aggregator → Synthesizer"
+  },
+  "llm_providers": [
+    {
+      "provider": "Google Gemini",
+      "models": ["gemini/gemini-2.5-flash", "gemini/gemini-2.5-pro"],
+      "env_key": "GEMINI_API_KEY",
+      "notes": "Recommended provider. Free tier available at https://aistudio.google.com/app/apikey"
+    },
+    {
+      "provider": "OpenAI",
+      "models": ["gpt-4o", "gpt-4o-mini"],
+      "env_key": "OPENAI_API_KEY",
+      "notes": "Alternative provider for OpenAI-compatible models"
+    }
+  ],
+  "agents": [
+    {
+      "name": "Knowledge Retrieval Specialist",
+      "role": "Retriever",
+      "description": "Searches and retrieves accurate facts and excerpts from knowledge base documents. Grounded strictly in indexed documentation.",
+      "tools": ["Knowledge Base Search", "List Knowledge Documents", "Read Complete Document"],
+      "allow_delegation": false,
+      "position": 1
+    },
+    {
+      "name": "Aggregator Host Specialist",
+      "role": "Aggregator",
+      "description": "Aggregates, cross-examines, and synthesizes knowledge excerpts. Resolves conflicts, deduplicates findings, and optionally inspects local host diagnostics.",
+      "tools": ["Knowledge Base Search", "Read Complete Document", "Aggregator Host Status Inspector"],
+      "allow_delegation": false,
+      "position": 2
+    },
+    {
+      "name": "Conversational Synthesizer",
+      "role": "Synthesizer",
+      "description": "Synthesizes retrieved and aggregated knowledge into warm, natural, and well-cited conversational responses for the user.",
+      "tools": [],
+      "allow_delegation": true,
+      "position": 3
+    }
+  ],
+  "tools": [
+    {
+      "name": "Knowledge Base Search",
+      "class": "KnowledgeSearchTool",
+      "description": "Keyword and relevance-based search across all knowledge base documents (.md, .txt, .json, .rst, .csv).",
+      "input": "query string",
+      "output": "Ranked excerpts with source document names"
+    },
+    {
+      "name": "List Knowledge Documents",
+      "class": "ListKnowledgeDocumentsTool",
+      "description": "Lists all indexed documents in the knowledge directory with file sizes.",
+      "input": "none",
+      "output": "Document list with sizes"
+    },
+    {
+      "name": "Read Complete Document",
+      "class": "KnowledgeReadDocumentTool",
+      "description": "Reads the full content of a specific knowledge base document by name.",
+      "input": "document_name string",
+      "output": "Full document text"
+    },
+    {
+      "name": "Aggregator Host Status Inspector",
+      "class": "AggregatorHostStatusTool",
+      "description": "Inspects local host system telemetry, CPU architecture, and Windows AggregatorHost.exe process health.",
+      "input": "query string (process | system | all)",
+      "output": "Host diagnostics report"
+    },
+    {
+      "name": "JSON Knowledge Search",
+      "class": "JsonKnowledgeSearchTool",
+      "description": "Searches exclusively through structured JSON knowledge files, returning parsed key-value data relevant to the query.",
+      "input": "query string",
+      "output": "Matching JSON fields and values"
+    }
+  ],
+  "pipeline": {
+    "process": "sequential",
+    "steps": [
+      {
+        "step": 1,
+        "agent": "Knowledge Retrieval Specialist",
+        "task": "Search knowledge base and extract relevant evidence"
+      },
+      {
+        "step": 2,
+        "agent": "Aggregator Host Specialist",
+        "task": "Aggregate, cross-reference, and validate retrieved facts"
+      },
+      {
+        "step": 3,
+        "agent": "Conversational Synthesizer",
+        "task": "Synthesize final conversational response with citations"
+      }
+    ]
+  },
+  "api_endpoints": {
+    "chat": "POST /api/chat — Send a message to the multi-agent pipeline",
+    "history": "GET /api/chat/history — Retrieve conversation history",
+    "clear": "POST /api/clear — Reset session memory",
+    "documents": "GET /api/documents — List knowledge base documents",
+    "upload": "POST /api/upload — Upload a new knowledge document",
+    "ai_info": "GET /api/ai/info — AI system metadata and agent roster",
+    "ai_query": "POST /api/ai/query — JSON-structured RAG query output",
+    "knowledge_index": "GET /api/ai/knowledge/index — Structured knowledge index",
+    "knowledge_search": "POST /api/ai/knowledge/search — Direct lightweight knowledge search"
+  },
+  "supported_knowledge_formats": [".md", ".txt", ".json", ".csv", ".rst"],
+  "session_memory": {
+    "type": "in-memory per session",
+    "max_turns_context": 5,
+    "persistence": "session-scoped (resets on server restart)"
+  }
+}

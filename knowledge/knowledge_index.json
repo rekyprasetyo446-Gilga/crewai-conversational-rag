@@ -1,0 +1,113 @@
+{
+  "index_version": "1.0",
+  "generated_at": "2026-09-19",
+  "description": "Structured index of all knowledge base documents. Maps each document to its category, topics, and a brief summary.",
+  "documents": [
+    {
+      "filename": "company_handbook.md",
+      "category": "HR & Policy",
+      "topics": [
+        "work schedule",
+        "remote work",
+        "paid time off",
+        "vacation",
+        "sick leave",
+        "parental leave",
+        "sabbatical",
+        "health insurance",
+        "learning stipend",
+        "home office allowance",
+        "security",
+        "2FA",
+        "data protection"
+      ],
+      "summary": "Acme Innovations employee handbook covering work flexibility, PTO policies, benefits, learning budget, and security requirements.",
+      "format": "markdown",
+      "estimated_size_kb": 1.5
+    },
+    {
+      "filename": "faq.md",
+      "category": "Support & FAQ",
+      "topics": [
+        "frequently asked questions",
+        "troubleshooting",
+        "onboarding",
+        "common issues"
+      ],
+      "summary": "Frequently asked questions covering common employee and product queries.",
+      "format": "markdown",
+      "estimated_size_kb": 1.0
+    },
+    {
+      "filename": "product_manual.md",
+      "category": "Product Documentation",
+      "topics": [
+        "product features",
+        "usage instructions",
+        "technical specifications",
+        "installation",
+        "configuration"
+      ],
+      "summary": "Product manual with feature descriptions, installation guide, and technical specifications.",
+      "format": "markdown",
+      "estimated_size_kb": 1.2
+    },
+    {
+      "filename": "ai_capabilities.json",
+      "category": "AI System",
+      "topics": [
+        "AI agents",
+        "CrewAI",
+        "RAG pipeline",
+        "LLM providers",
+        "tools",
+        "API endpoints",
+        "knowledge search",
+        "session memory",
+        "Gemini",
+        "OpenAI",
+        "multi-agent"
+      ],
+      "summary": "Complete description of the CrewAI Conversational RAG system: agents, tools, LLM providers, pipeline architecture, and available API endpoints.",
+      "format": "json",
+      "estimated_size_kb": 3.5
+    },
+    {
+      "filename": "knowledge_index.json",
+      "category": "System Meta",
+      "topics": [
+        "knowledge index",
+        "document registry",
+        "topic mapping",
+        "categories"
+      ],
+      "summary": "This index file. Maps all knowledge base documents to categories, topics, and summaries for structured routing.",
+      "format": "json",
+      "estimated_size_kb": 2.0
+    }
+  ],
+  "categories": [
+    "HR & Policy",
+    "Support & FAQ",
+    "Product Documentation",
+    "AI System",
+    "System Meta"
+  ],
+  "topic_to_documents": {
+    "AI agents": ["ai_capabilities.json"],
+    "RAG pipeline": ["ai_capabilities.json"],
+    "CrewAI": ["ai_capabilities.json"],
+    "LLM providers": ["ai_capabilities.json"],
+    "tools": ["ai_capabilities.json"],
+    "API endpoints": ["ai_capabilities.json"],
+    "work schedule": ["company_handbook.md"],
+    "remote work": ["company_handbook.md"],
+    "paid time off": ["company_handbook.md"],
+    "vacation": ["company_handbook.md"],
+    "health insurance": ["company_handbook.md"],
+    "security": ["company_handbook.md"],
+    "FAQ": ["faq.md"],
+    "product features": ["product_manual.md"],
+    "installation": ["product_manual.md"]
+  }
+}
