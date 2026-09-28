@@ -1,0 +1,8 @@
+{
+  "name": "antimetal",
+  "version": "1.0.0",
+  "description": "Bring Antimetal's software investigation intelligence into your environment. Triage problems, investigate root causes, fetch observability artifacts, and apply remediations.",
+  "author": "Antimetal",
+  "repository": "https://github.com/antimetal/skills",
+  "homepage": "https://docs.antimetal.com/connect"
+}

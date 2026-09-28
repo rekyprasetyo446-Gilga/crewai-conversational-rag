@@ -50,3 +50,14 @@ async def status_endpoint(
         knowledge_dir=str(settings.knowledge_dir.resolve()),
         active_sessions=crew_service.session_count(),
     )
+
+
+@router.get(
+    "/api/mcp",
+    summary="Model Context Protocol (MCP) Server Status",
+    description="Returns registered MCP servers, transport modes, tool counts, and agent assignments.",
+)
+async def mcp_status_endpoint(
+    crew_service: CrewService = Depends(get_crew_service),
+):
+    return crew_service.get_mcp_status()

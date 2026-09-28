@@ -25,7 +25,7 @@
       "role": "Retriever",
       "description": "Searches and retrieves accurate facts and excerpts from knowledge base documents. Grounded strictly in indexed documentation.",
       "tools": ["Knowledge Base Search", "List Knowledge Documents", "Read Complete Document"],
-      "allow_delegation": false,
+      "allow_delegation": true,
       "position": 1
     },
     {

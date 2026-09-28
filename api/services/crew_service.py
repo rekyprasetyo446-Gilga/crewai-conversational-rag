@@ -2,7 +2,7 @@
 CrewService: Manages multi-turn ConversationalRAGCrew instances per session.
 """
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Any
 from crew import ConversationalRAGCrew
 
 
@@ -53,3 +53,9 @@ class CrewService:
         """Returns the active model name."""
         crew = self.get_crew("default")
         return crew.model
+
+    def get_mcp_status(self, session_id: str = "default") -> Dict[str, Any]:
+        """Returns MCP status and server topology from the session crew."""
+        from typing import Any
+        crew = self.get_crew(session_id)
+        return crew.get_mcp_status()

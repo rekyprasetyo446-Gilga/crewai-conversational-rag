@@ -1,0 +1,43 @@
+{
+  "description": "Model Context Protocol (MCP) Server Configurations for CrewAI Multi-Agent Collective",
+  "enabled": true,
+  "servers": {
+    "local_fastmcp": {
+      "name": "Local FastMCP RAG & Host Server",
+      "transport": "stdio",
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "agents": ["retriever", "aggregator_host", "conversationalist"],
+      "tools_overview": [
+        "get_system_telemetry",
+        "inspect_host_process",
+        "search_mcp_knowledge",
+        "read_mcp_document",
+        "mcp_blackboard_write",
+        "mcp_blackboard_read",
+        "fetch_url_content"
+      ]
+    },
+    "antimetal": {
+      "name": "Antimetal Cloud Infrastructure & Investigation",
+      "transport": "http",
+      "url": "https://mcp.antimetal.com",
+      "headers": {
+        "Authorization": "Bearer ${ANTIMETAL_API_KEY}"
+      },
+      "streamable": true,
+      "agents": ["retriever", "aggregator_host", "conversationalist"],
+      "tools_overview": [
+        "search_issues",
+        "get_issue_report",
+        "get_issue_fixes",
+        "investigate_issue",
+        "get_artifact",
+        "ask"
+      ]
+    }
+  }
+}

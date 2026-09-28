@@ -15,6 +15,7 @@ class AgentInfo(BaseModel):
     role: str = Field(..., description="Agent functional role")
     description: str = Field(..., description="What this agent does")
     tools: List[str] = Field(default_factory=list, description="Tools available to this agent")
+    allow_delegation: Optional[bool] = Field(default=None, description="Whether agent delegation is enabled")
 
 
 class ToolInfo(BaseModel):

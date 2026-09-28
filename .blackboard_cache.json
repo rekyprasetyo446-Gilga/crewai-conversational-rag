@@ -1,0 +1,14 @@
+{
+  "test_session": {
+    "test_key_mcp": {
+      "value": "MCP Verification 2026",
+      "author": "MCP Agent Collective"
+    }
+  },
+  "test_s": {
+    "base_tool_test": {
+      "value": "BaseToolOK",
+      "author": "MCP Agent Collective"
+    }
+  }
+}
