@@ -1,0 +1,131 @@
+{
+  "system_module": "AI Modul Configuration & Parameter Modulation",
+  "version": "2.0.0",
+  "description": "Pengaturan modul-modul kecerdasan buatan (AI Modules) pada CrewAI Conversational RAG, mencakup modulasi hyperparameter LLM (temperature, top_p, top_k), modulasi retrieval RAG, modulasi memori multi-tier, dan modulasi alat bantu (MCP & DNS tools).",
+  "ai_modules": [
+    {
+      "module_id": "MOD-AI-01",
+      "name": "LLM Inference & Hyperparameter Modulation Module",
+      "category": "Inference Engine",
+      "providers": ["Google Gemini", "OpenAI"],
+      "default_model": "gemini/gemini-2.5-flash",
+      "modulation_presets": {
+        "deterministic_factual": {
+          "purpose": "Pencarian fakta dokumen, pembacaan konfigurasi teknis, dan verifikasi diagnostik",
+          "temperature": 0.0,
+          "top_p": 0.1,
+          "top_k": 1,
+          "presence_penalty": 0.0,
+          "frequency_penalty": 0.0,
+          "recommended_for": ["Retriever Agent", "JSON Aggregation Tasks", "DNS Verification"]
+        },
+        "balanced_reasoning": {
+          "purpose": "Analisis multi-sumber, resolusi konflik data, dan sintesis ringkasan",
+          "temperature": 0.3,
+          "top_p": 0.85,
+          "top_k": 40,
+          "recommended_for": ["Aggregator Host Coordinator"]
+        },
+        "conversational_synthesis": {
+          "purpose": "Penyusunan jawaban interaktif, ramah, dan kontekstual kepada pengguna",
+          "temperature": 0.7,
+          "top_p": 0.95,
+          "top_k": 50,
+          "recommended_for": ["Conversational Synthesizer Agent"]
+        }
+      }
+    },
+    {
+      "module_id": "MOD-AI-02",
+      "name": "RAG Knowledge Retrieval & Vector Search Module",
+      "category": "Information Retrieval",
+      "parameters": {
+        "chunk_size": 1000,
+        "chunk_overlap": 200,
+        "search_algorithms": ["Direct Keyword Matching", "JSON Key-Path Search", "Relevance Scoring"],
+        "max_excerpts_per_query": 4,
+        "min_relevance_score": 1,
+        "supported_extensions": [".md", ".json", ".txt", ".csv", ".rst"],
+        "json_mode_boost": "Memberikan bobot 5x untuk kecocokan exact phrase pada dokumen terstruktur"
+      },
+      "active_knowledge_catalog": [
+        "modulasi_telekomunikasi_alkom.json",
+        "ai_modules_configuration.json",
+        "ai_capabilities.json",
+        "knowledge_index.json",
+        "company_handbook.md",
+        "faq.md",
+        "product_manual.md"
+      ]
+    },
+    {
+      "module_id": "MOD-AI-03",
+      "name": "Multi-Tier Session & Memory Module",
+      "category": "Memory & Persistence",
+      "layers": {
+        "tier_1_dialogue_window": {
+          "storage": "In-Memory Context Buffer",
+          "capacity": "Sliding window 5 interaksi terakhir",
+          "latency": "< 1 ms"
+        },
+        "tier_2_relational_blackboard": {
+          "storage": "XAMPP MySQL database 'crewai_memory'",
+          "tables": ["conversation_history", "agent_logs", "shared_blackboard"],
+          "features": ["Atomic read/write", "Session isolation", "Cross-agent blackboard fact sharing"]
+        },
+        "tier_3_file_storage": {
+          "storage": "XAMPP FileZilla FTP Server 'agent_storage'",
+          "purpose": "Penyimpanan dataset besar, log hasil diagnostik, dan file artefak"
+        }
+      }
+    },
+    {
+      "module_id": "MOD-AI-04",
+      "name": "Network & DNS Diagnostics Module (c-ares Engine)",
+      "category": "Host & Network Telemetry",
+      "binaries": {
+        "adig.exe": {
+          "engine": "c-ares 1.34.8",
+          "default_timeout_ms": 3000,
+          "default_retries": 2,
+          "supported_records": ["A", "AAAA", "MX", "TXT", "NS", "SOA", "PTR", "CNAME", "SRV"],
+          "features": ["Asynchronous non-blocking queries", "+tcp transport toggle", "+dns0x20 randomization"]
+        },
+        "ahost.exe": {
+          "engine": "c-ares 1.34.8",
+          "modes": ["Dual-Stack IPv4/IPv6 ('u')", "IPv4 only ('a')", "IPv6 only ('aaaa')"],
+          "features": ["Round-robin DNS resolver fallback", "Low-latency endpoint reachability verification"]
+        }
+      }
+    },
+    {
+      "module_id": "MOD-AI-05",
+      "name": "Model Context Protocol (FastMCP) Integration Module",
+      "category": "Inter-Agent Protocol",
+      "transport": "stdio",
+      "exposed_tools": [
+        "get_system_telemetry",
+        "inspect_host_process",
+        "query_dns_adig",
+        "resolve_host_ahost",
+        "search_mcp_knowledge",
+        "read_mcp_document",
+        "mcp_blackboard_write",
+        "mcp_blackboard_read",
+        "fetch_url_content"
+      ]
+    },
+    {
+      "module_id": "MOD-AI-06",
+      "name": "FastAPI Modular REST Service Module",
+      "category": "Web Service Architecture",
+      "endpoints": {
+        "/api/chat": "Interaksi percakapan multi-agent",
+        "/api/ai/info": "Status metadata sistem, agen, dan model",
+        "/api/ai/query": "Eksekusi structured JSON RAG query",
+        "/api/ai/knowledge/index": "Peta indeks dokumen pengetahuan",
+        "/api/ai/knowledge/search": "Pencarian cepat tanpa pemanggilan agen"
+      }
+    }
+  ]
+}

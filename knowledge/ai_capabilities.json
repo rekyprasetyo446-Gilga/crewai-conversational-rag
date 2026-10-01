@@ -378,5 +378,26 @@
         "protocol": "FTP / HTTP dual-access"
       }
     ]
+  },
+  "telecom_modulation_knowledge": {
+    "source_file": "knowledge/modulasi_telekomunikasi_alkom.json",
+    "analog_modulation": ["AM (Amplitude Modulation)", "FM (NBFM / WBFM)", "SSB (USB / LSB)", "CW (Continuous Wave)"],
+    "digital_modulation": ["FSK (2-FSK / 4-FSK / GFSK)", "PSK (BPSK / QPSK / 8-PSK)", "QAM (16-QAM / 64-QAM / 256-QAM)", "OFDM"],
+    "tactical_spread_spectrum": ["FHSS (Frequency Hopping Spread Spectrum)", "DSSS (Direct Sequence Spread Spectrum)"],
+    "alkom_transceiver_presets": ["ALKOM-HF-01 (Tactical Manpack)", "ALKOM-VHF-02 (Combat Net Radio)", "ALKOM-UHF-03 (HT DMR Tier II)"]
+  },
+  "ai_modules_modulation": {
+    "source_file": "knowledge/ai_modules_configuration.json",
+    "hyperparameter_presets": {
+      "deterministic_factual": {"temperature": 0.0, "top_p": 0.1, "top_k": 1},
+      "balanced_reasoning": {"temperature": 0.3, "top_p": 0.85, "top_k": 40},
+      "conversational_synthesis": {"temperature": 0.7, "top_p": 0.95, "top_k": 50}
+    },
+    "rag_retrieval_modulation": {
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "max_excerpts": 4
+    }
   }
 }
+

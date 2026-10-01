@@ -228,16 +228,16 @@ class JsonKnowledgeSearchTool(BaseTool):
                     pass
                 continue
 
-            # Flatten JSON and score each leaf value
+            # Flatten JSON and score each leaf (key_path + value)
             for key_path, value in self._flatten_json(data):
                 value_str = str(value)
-                value_lower = value_str.lower()
-                score = sum(1 for term in query_terms if term in value_lower)
-                if score > 0 or query.lower() in value_lower:
+                searchable = f"{key_path.lower()} {value_str.lower()}"
+                score = sum(1 for term in query_terms if term in searchable)
+                if score > 0 or query.lower() in searchable:
                     matches.append({
                         "file": file_path.name,
                         "key_path": key_path,
-                        "score": score + (5 if query.lower() in value_lower else 0),
+                        "score": score + (5 if query.lower() in searchable else 0),
                         "text": f"`{key_path}`: {value_str[:300]}",
                     })
 

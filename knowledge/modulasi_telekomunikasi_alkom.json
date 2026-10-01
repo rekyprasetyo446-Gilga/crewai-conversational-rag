@@ -1,0 +1,220 @@
+{
+  "module_name": "Modulasi Telekomunikasi & Sistem Alkom",
+  "version": "1.0.0",
+  "category": "Telecommunication & Signal Engineering",
+  "description": "Panduan komprehensif seluruh pengaturan modulasi sinyal analog dan digital, parameter transmisi radio frekuensi (RF), standarisasi perangkat Alat Komunikasi (Alkom), serta konfigurasi pemancar dan penerima (Transceiver).",
+  "last_updated": "2026-10-01",
+  "modulation_categories": {
+    "analog_modulation": {
+      "title": "Modulasi Analog (Analog Modulation)",
+      "description": "Proses penumpangan sinyal informasi analog ke sinyal pembawa (carrier) gelombang kontinu.",
+      "types": [
+        {
+          "name": "AM (Amplitude Modulation)",
+          "full_name": "Modulasi Amplitudo",
+          "operating_bands": ["LF (30-300 kHz)", "MF (300-3000 kHz)", "HF (3-30 MHz)"],
+          "parameter_settings": {
+            "carrier_frequency_range": "535 kHz - 1705 kHz (Broadcast MW), 3 - 30 MHz (HF)",
+            "channel_bandwidth": "6 kHz - 10 kHz (Double Sideband)",
+            "modulation_index_m": "0.7 - 0.95 (Optimal m < 1.0 untuk mencegah over-modulation)",
+            "audio_frequency_range": "300 Hz - 3400 Hz (Voice), 50 Hz - 5000 Hz (Broadcast)",
+            "power_distribution": "Carrier = 66.7%, Upper Sideband = 16.7%, Lower Sideband = 16.7% (pada m=1)"
+          },
+          "standard_use_cases": ["Komunikasi HF jarak jauh", "Aviation ground-to-air AM (118-137 MHz)", "Broadcast radio"],
+          "advantages": ["Rangkaian detektor selubung (envelope detector) sederhana", "Dapat diterima pada perangkat berbiaya rendah"],
+          "disadvantages": ["Efisiensi daya rendah", "Sangat rentan terhadap gangguan derau (noise) dan interferensi atmosfer"]
+        },
+        {
+          "name": "SSB (Single Sideband - USB / LSB)",
+          "full_name": "Single Sideband Suppressed Carrier",
+          "operating_bands": ["HF (1.6 - 30 MHz)"],
+          "subtypes": [
+            {
+              "type": "USB (Upper Sideband)",
+              "rule": "Digunakan sebagai standar pada frekuensi HF di atas 10 MHz (10-30 MHz)"
+            },
+            {
+              "type": "LSB (Lower Sideband)",
+              "rule": "Digunakan sebagai standar pada frekuensi HF di bawah 10 MHz (1.6-10 MHz)"
+            }
+          ],
+          "parameter_settings": {
+            "channel_bandwidth": "2.7 kHz - 3.0 kHz (Penghematan spektrum >50% dibanding AM)",
+            "carrier_suppression": "Minimal > 40 dB di bawah PEP (Peak Envelope Power)",
+            "unwanted_sideband_suppression": "Minimal > 50 dB",
+            "audio_passband": "300 Hz - 2700 Hz",
+            "frequency_stability": "± 10 Hz atau lebih baik (TCXO / OCXO)"
+          },
+          "standard_use_cases": ["Radio Komunikasi Taktis Jarak Jauh (Militer Alkom HF)", "Maritim HF Radio", "Amateur Radio"],
+          "advantages": ["Efisiensi daya 4x lebih tinggi dibanding AM konvensional", "Lebar pita spektrum sangat hemat", "Penetrasi sinyal jarak jauh melintasi ionosfer (skywave)"]
+        },
+        {
+          "name": "FM (Frequency Modulation)",
+          "full_name": "Modulasi Frekuensi",
+          "operating_bands": ["VHF (30 - 300 MHz)", "UHF (300 - 3000 MHz)"],
+          "subtypes": [
+            {
+              "type": "NBFM (Narrowband FM)",
+              "use_case": "Komunikasi Radio Taktis Alkom VHF/UHF Handheld & Mobile (HT & Rig)"
+            },
+            {
+              "type": "WBFM (Wideband FM)",
+              "use_case": "Broadcast komersial 87.5 - 108 MHz"
+            }
+          ],
+          "parameter_settings": {
+            "frequency_deviation_peak": "NBFM: ± 2.5 kHz (pada spasi kanal 12.5 kHz) atau ± 5.0 kHz (pada spasi kanal 25 kHz); WBFM: ± 75 kHz",
+            "channel_spacing": "12.5 kHz / 25 kHz",
+            "modulation_index_beta": "Beta = Delta_f / f_m (NBFM: 0.5 - 1.0; WBFM: > 5)",
+            "carson_bandwidth": "BW = 2 * (Delta_f + f_m) ≈ 11 - 16 kHz untuk NBFM suara",
+            "pre_emphasis_de_emphasis": "50 mikrodetik (Eropa/Asia) atau 75 mikrodetik (AS)",
+            "squelch_sensitivity": "-118 dBm to -124 dBm (12 dB SINAD)"
+          },
+          "standard_use_cases": ["Handy Talky (HT) VHF 136-174 MHz", "UHF 400-470 MHz", "Komunikasi Taktis Peleton/Kompi"],
+          "advantages": ["Kekebalan tinggi terhadap noise amplitudo", "Audio jernih (Capture Effect)", "Daya pancar konstan (amplifier kelas C efisien)"]
+        },
+        {
+          "name": "CW (Continuous Wave)",
+          "full_name": "A1A Morse Telegraphy",
+          "operating_bands": ["MF", "HF (1.8 - 30 MHz)"],
+          "parameter_settings": {
+            "channel_bandwidth": "100 Hz - 500 Hz",
+            "keying_speed": "12 - 35 WPM (Words Per Minute)",
+            "sidetone_pitch": "500 Hz - 800 Hz"
+          },
+          "standard_use_cases": ["Komunikasi darurat ekstrem", "Sinyal maritim darurat", "Kondisi SNR mendekati 0 dB"]
+        }
+      ]
+    },
+    "digital_modulation": {
+      "title": "Modulasi Digital (Digital Modulation)",
+      "description": "Teknik modulasi di mana sinyal informasi berupa bit-stream digital memodulasi parameter frekuensi pembawa.",
+      "types": [
+        {
+          "name": "FSK (Frequency Shift Keying)",
+          "subtypes": ["2-FSK", "4-FSK", "GFSK (Gaussian FSK)"],
+          "parameter_settings": {
+            "frequency_separation": "Equal to symbol rate (coherent) or 1.5x (non-coherent)",
+            "standard_dmr_deviation": "DMR Tier II/III 4-FSK: Symbol 01 (+1.944 kHz), 00 (+0.648 kHz), 10 (-0.648 kHz), 11 (-1.944 kHz)",
+            "gaussian_filter_bt": "BT = 0.5 (DMR / P25) atau BT = 0.3 (GSM GMSK)",
+            "symbol_rate": "4800 baud (9600 bps via 4-level FSK)",
+            "channel_spacing": "12.5 kHz"
+          },
+          "standard_use_cases": ["DMR (Digital Mobile Radio)", "APCO P25 Phase 1", "Pager POCSAG", "LoRa / Telemetri FSK"]
+        },
+        {
+          "name": "PSK (Phase Shift Keying)",
+          "subtypes": ["BPSK (2-Phase)", "QPSK (4-Phase)", "8-PSK", "pi/4-DQPSK"],
+          "parameter_settings": {
+            "bits_per_symbol": "BPSK = 1 bit/simbol, QPSK = 2 bit/simbol, 8-PSK = 3 bit/simbol",
+            "phase_constellation": "QPSK: 45°, 135°, 225°, 315°",
+            "roll_off_factor_alpha": "Alpha = 0.20 - 0.35 (Root-Raised Cosine)",
+            "minimum_eb_n0": "BPSK/QPSK BER 10^-5: ~9.6 dB",
+            "spectral_efficiency": "QPSK: ~1.5 - 1.8 bps/Hz"
+          },
+          "standard_use_cases": ["Satelit Komunikasi (Satkom/VSAT)", "TETRA (pi/4-DQPSK)", "Modem Data HF Militer (MIL-STD-188-110)"]
+        },
+        {
+          "name": "QAM (Quadrature Amplitude Modulation)",
+          "subtypes": ["16-QAM", "64-QAM", "256-QAM", "1024-QAM"],
+          "parameter_settings": {
+            "bits_per_symbol": "16-QAM = 4 bit, 64-QAM = 6 bit, 256-QAM = 8 bit",
+            "peak_to_average_power_ratio_papr": "4.2 dB (16-QAM) hingga 6.8 dB (64-QAM)",
+            "required_snr_awgn": "16-QAM: ~15-18 dB; 64-QAM: ~22-26 dB; 256-QAM: > 32 dB",
+            "error_vector_magnitude_evm": "< 5.0% (16-QAM), < 2.5% (64-QAM), < 1.2% (256-QAM)"
+          },
+          "standard_use_cases": ["Radio Microwave Link Backhaul", "Wi-Fi 5/6/7", "DVB-C / DVB-T2 Broadcast", "5G NR Broadband"]
+        },
+        {
+          "name": "OFDM (Orthogonal Frequency Division Multiplexing)",
+          "parameter_settings": {
+            "subcarrier_spacing": "15 kHz, 30 kHz, 60 kHz, 120 kHz (5G NR) / 312.5 kHz (Wi-Fi)",
+            "cyclic_prefix_cp": "Normal CP (4.7 us / 7%) atau Extended CP (16.7 us untuk mitigasi multipath delay)",
+            "subcarrier_modulations": ["QPSK", "16-QAM", "64-QAM", "256-QAM"],
+            "fft_sizes": ["128", "256", "512", "1024", "2048", "4096"]
+          },
+          "standard_use_cases": ["LTE 4G & 5G NR", "Wi-Fi 802.11ax/be", "DVB-T2 Digital Terrestrial TV", "SDR Tactical Broadband"]
+        }
+      ]
+    },
+    "tactical_and_spread_spectrum": {
+      "title": "Modulasi Taktis Militer & Spektrum Tersebar (Spread Spectrum)",
+      "description": "Modulasi dengan ketahanan tinggi terhadap jamming, intersepsi (LPI/LPD), dan interferensi medan perang.",
+      "types": [
+        {
+          "name": "FHSS (Frequency Hopping Spread Spectrum)",
+          "full_name": "Lompatan Frekuensi Spektrum Tersebar",
+          "parameter_settings": {
+            "hop_rate_slow": "10 - 200 hops/detik (Slow Hopping)",
+            "hop_rate_fast": "500 - 1000+ hops/detik (Fast Hopping)",
+            "hop_bandwidth": "12.5 kHz / 25 kHz per kanal",
+            "hopping_span": "Spread over 10 MHz - 60 MHz (misal VHF 30-88 MHz)",
+            "hop_sequence_key": "Kunci Kriptografis Pseudo-Random (TRANSEC / COMSEC)",
+            "dwell_time": "1 - 5 milidetik per kanal"
+          },
+          "standard_use_cases": ["Radio Taktis VHF Militer (PR4G, Harris Falcon III, Rohde & Schwarz)", "Link 16 Tactical Data Network", "Bluetooth"]
+        },
+        {
+          "name": "DSSS (Direct Sequence Spread Spectrum)",
+          "full_name": "Direct Sequence Spread Spectrum",
+          "parameter_settings": {
+            "spreading_code": "Pseudo-Noise (PN) Gold Code atau Barker Code (11-chip)",
+            "chip_rate": "1.023 Mchips/s (GPS L1) hingga 10+ Mchips/s",
+            "processing_gain_gp": "Gp = 10 * log10(Chip_Rate / Bit_Rate) (Tingkat kekebalan jamming 10-30 dB)"
+          },
+          "standard_use_cases": ["GPS / GNSS Navigation", "Militer Anti-Jam Satcom", "CDMA2000"]
+        }
+      ]
+    }
+  },
+  "alkom_transceiver_presets": {
+    "hf_tactical_preset": {
+      "preset_id": "ALKOM-HF-01",
+      "device_type": "HF Tactical Manpack Transceiver",
+      "frequency_range": "1.6000 MHz - 29.9999 MHz",
+      "tuning_step": "10 Hz / 100 Hz",
+      "modulation_modes": ["USB (J3E)", "LSB (J3E)", "AM (A3E)", "CW (A1A)", "Data (MIL-STD-188-110A/B FSK/PSK)"],
+      "rf_output_power": "Low: 1W, Med: 5W, High: 20W (Manpack) / 100W (Base/Vehicular)",
+      "antenna_impedance": "50 Ohm unbalanced, whip / long wire matching 10-1000 Ohm",
+      "rx_sensitivity": "SSB: -119 dBm (0.25 uV untuk 10 dB SINAD)"
+    },
+    "vhf_tactical_preset": {
+      "preset_id": "ALKOM-VHF-02",
+      "device_type": "VHF Combat Net Radio (CNR)",
+      "frequency_range": "30.000 MHz - 87.975 MHz",
+      "channel_spacing": "25 kHz",
+      "channels_available": "2320 channels",
+      "modulation_modes": ["NBFM (F3E)", "Digital 16 kbps CVSD Voice", "FHSS Anti-Jamming Mode"],
+      "rf_output_power": "0.1W / 2W / 5W (Handheld), 50W (Power Amplifier Vehicle)",
+      "hop_rate": "100 - 300 hops/detik",
+      "rx_sensitivity": "-116 dBm (12 dB SINAD FM)"
+    },
+    "uhf_dmr_preset": {
+      "preset_id": "ALKOM-UHF-03",
+      "device_type": "UHF Handheld Transceiver (HT DMR Tier II)",
+      "frequency_range": "400.000 MHz - 470.000 MHz",
+      "channel_spacing": "12.5 kHz (TDMA 2 Time Slots)",
+      "modulation_modes": ["4-FSK Digital DMR", "12.5 kHz NBFM Analog"],
+      "vocoder": "AMBE+2™ Digital Vocoder",
+      "rf_output_power": "1W (Low) / 5W (High)",
+      "ber_threshold": "BER 5% at -119 dBm"
+    }
+  },
+  "troubleshooting_and_tuning": [
+    {
+      "symptom": "Suara terdistorsi parah pada penerimaan AM / SSB",
+      "probable_cause": "Over-modulation (m > 1.0) atau distorsi AGC pada receiver RF front-end.",
+      "solution": "Turunkan Mic Gain pada transmitter; aktifkan attenuator -10 dB atau -20 dB pada receiver jika sinyal terlalu kuat."
+    },
+    {
+      "symptom": "Desis (hiss) audio tinggi pada NBFM",
+      "probable_cause": "Sinyal di bawah ambang batas quieting (12 dB SINAD); deviasi frekuensi terlalu kecil.",
+      "solution": "Sesuaikan Squelch threshold; periksa keselarasan deviasi transmitter ke ±2.5 kHz atau ±5.0 kHz sesuai lebar kanal."
+    },
+    {
+      "symptom": "Tingkat error bit (BER) tinggi pada DMR 4-FSK",
+      "probable_cause": "Frequency offset melampaui toleransi TCXO (> ±500 Hz); interferensi kanal berdampingan.",
+      "solution": "Kalibrasi frekuensi master oscillator; pastikan filter IF bandwidth sesuai dengan mask 12.5 kHz."
+    }
+  ]
+}
