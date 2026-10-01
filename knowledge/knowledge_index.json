@@ -66,11 +66,17 @@
         "session memory",
         "Gemini",
         "OpenAI",
-        "multi-agent"
+        "multi-agent",
+        "DNS diagnostics",
+        "adig.exe",
+        "ahost.exe",
+        "c-ares",
+        "host resolution",
+        "network diagnostics"
       ],
-      "summary": "Complete description of the CrewAI Conversational RAG system: agents, tools, LLM providers, pipeline architecture, and available API endpoints.",
+      "summary": "Complete description of the CrewAI Conversational RAG system: agents, tools, LLM providers, pipeline architecture, API endpoints, and c-ares asynchronous DNS diagnostics (adig.exe & ahost.exe).",
       "format": "json",
-      "estimated_size_kb": 3.5
+      "estimated_size_kb": 8.0
     },
     {
       "filename": "knowledge_index.json",
@@ -100,6 +106,12 @@
     "LLM providers": ["ai_capabilities.json"],
     "tools": ["ai_capabilities.json"],
     "API endpoints": ["ai_capabilities.json"],
+    "DNS diagnostics": ["ai_capabilities.json"],
+    "adig.exe": ["ai_capabilities.json"],
+    "ahost.exe": ["ai_capabilities.json"],
+    "c-ares": ["ai_capabilities.json"],
+    "host resolution": ["ai_capabilities.json"],
+    "network diagnostics": ["ai_capabilities.json"],
     "work schedule": ["company_handbook.md"],
     "remote work": ["company_handbook.md"],
     "paid time off": ["company_handbook.md"],

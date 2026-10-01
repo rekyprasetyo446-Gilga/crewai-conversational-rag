@@ -258,6 +258,41 @@ class MCPURLFetcherTool(BaseTool):
         return fetch_url_content(url=url)
 
 
+class MCPAdigInput(BaseModel):
+    domain: str = Field(..., description="Domain name or host to query via adig.")
+    record_type: str = Field(default="A", description="DNS record type: A, AAAA, MX, TXT, NS, SOA, CNAME, PTR, ANY.")
+    server: str = Field(default="", description="Optional custom DNS server IP address.")
+    extra_flags: str = Field(default="", description="Optional extra flags.")
+
+
+class MCPAdigQueryTool(BaseTool):
+    name: str = "MCP ADig DNS Query Tool"
+    description: str = "Performs asynchronous DNS interrogation and record inspection via FastMCP (adig.exe / c-ares engine)."
+    args_schema: type[BaseModel] = MCPAdigInput
+
+    def _run(self, domain: str, record_type: str = "A", server: str = "", extra_flags: str = "") -> str:
+        from mcp_server import query_dns_adig
+        return query_dns_adig(domain=domain, record_type=record_type, server=server, extra_flags=extra_flags)
+
+
+class MCPAhostInput(BaseModel):
+    host: str = Field(..., description="Hostname or IP address to resolve via ahost.")
+    lookup_type: str = Field(default="u", description="Lookup type: 'u' (both IPv4/IPv6), 'a' (IPv4), or 'aaaa' (IPv6).")
+    server: str = Field(default="", description="Optional custom DNS server IP.")
+    domain: str = Field(default="", description="Optional search domain to append.")
+    debug: bool = Field(default=False, description="Whether to include debug output.")
+
+
+class MCPAhostLookupTool(BaseTool):
+    name: str = "MCP AHost Lookup Tool"
+    description: str = "Performs fast asynchronous hostname and dual-stack IP resolution via FastMCP (ahost.exe / c-ares engine)."
+    args_schema: type[BaseModel] = MCPAhostInput
+
+    def _run(self, host: str, lookup_type: str = "u", server: str = "", domain: str = "", debug: bool = False) -> str:
+        from mcp_server import resolve_host_ahost
+        return resolve_host_ahost(host=host, lookup_type=lookup_type, server=server, domain=domain, debug=debug)
+
+
 def get_local_fastmcp_tools() -> List[BaseTool]:
     """Returns a list of all local FastMCP tools adapted as CrewAI BaseTools."""
     return [
@@ -268,4 +303,7 @@ def get_local_fastmcp_tools() -> List[BaseTool]:
         MCPBlackboardWriteTool(),
         MCPBlackboardReadTool(),
         MCPURLFetcherTool(),
+        MCPAdigQueryTool(),
+        MCPAhostLookupTool(),
     ]
+

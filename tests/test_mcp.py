@@ -25,6 +25,8 @@ from mcp_manager import (
     MCPDocumentReaderTool,
     MCPBlackboardWriteTool,
     MCPBlackboardReadTool,
+    MCPAdigQueryTool,
+    MCPAhostLookupTool,
 )
 from crewai.mcp import MCPServerStdio, MCPServerHTTP, MCPServerSSE
 from agents import get_retriever_agent, get_aggregator_host_agent, get_conversational_agent
@@ -37,6 +39,8 @@ from mcp_server import (
     mcp_blackboard_write,
     mcp_blackboard_read,
     fetch_url_content,
+    query_dns_adig,
+    resolve_host_ahost,
 )
 
 
@@ -125,6 +129,16 @@ def test_fastmcp_server_tools():
     search_res = search_mcp_knowledge("support")
     assert "MCP Knowledge Search" in search_res or "No documentation found" in search_res
 
+    # DNS Interrogation via adig.exe
+    dns_res = query_dns_adig(domain="google.com", record_type="A")
+    assert "ADig DNS Query Report" in dns_res
+    assert "google.com" in dns_res
+
+    # Host Lookup via ahost.exe
+    host_res = resolve_host_ahost(host="google.com", lookup_type="u")
+    assert "AHost Resolution Report" in host_res
+    assert "google.com" in host_res
+
     # Invalid URL handling
     invalid_url = fetch_url_content("not-a-valid-url")
     assert "Invalid URL" in invalid_url
@@ -144,8 +158,18 @@ def test_crewai_basetool_mcp_adapters():
     r_out = blackboard_reader._run(key_name="base_tool_test", session_id="test_s")
     assert "BaseToolOK" in r_out
 
+    # Test MCP ADig and AHost wrappers
+    adig_tool = MCPAdigQueryTool()
+    adig_out = adig_tool._run(domain="google.com", record_type="A")
+    assert "ADig DNS Query Report" in adig_out
+
+    ahost_tool = MCPAhostLookupTool()
+    ahost_out = ahost_tool._run(host="google.com")
+    assert "AHost Resolution Report" in ahost_out
+
     all_tools = get_local_fastmcp_tools()
-    assert len(all_tools) == 7
+    assert len(all_tools) == 9
+
 
 
 def test_agent_initialization_with_mcps():
@@ -188,3 +212,37 @@ def test_crew_gemini_38_model_and_mcp_status():
     assert mcp_status["agent_assignments"]["retriever"] >= 1
     assert mcp_status["agent_assignments"]["aggregator_host"] >= 1
     assert mcp_status["agent_assignments"]["conversationalist"] >= 1
+
+
+def test_native_adig_ahost_and_capabilities_json():
+    """Verify native AdigDnsQueryTool, AhostLookupTool, and ai_capabilities.json structure."""
+    import json
+    from tools import AdigDnsQueryTool, AhostLookupTool
+
+    # Native tools
+    adig_tool = AdigDnsQueryTool()
+    out1 = adig_tool._run(domain="google.com", record_type="A")
+    assert "ADig DNS Query Report" in out1
+    assert "c-ares adig.exe v1.34.8" in out1
+
+    ahost_tool = AhostLookupTool()
+    out2 = ahost_tool._run(host="google.com", lookup_type="u")
+    assert "AHost Resolution Report" in out2
+    assert "c-ares ahost.exe v1.34.8" in out2
+
+    # Verify ai_capabilities.json
+    cap_path = project_root / "knowledge" / "ai_capabilities.json"
+    assert cap_path.exists()
+    caps = json.loads(cap_path.read_text(encoding="utf-8"))
+
+    assert caps["system"]["version"] == "2.0.0"
+    assert "network_and_dns_capabilities" in caps
+    binaries = caps["network_and_dns_capabilities"]["bundled_binaries"]
+    assert "adig.exe" in binaries
+    assert "ahost.exe" in binaries
+    assert binaries["adig.exe"]["shared_library"] == "knowledge/libcares-2.dll"
+
+    tool_names = [t["name"] for t in caps["tools"]]
+    assert "ADig DNS Query Tool" in tool_names
+    assert "AHost Lookup Tool" in tool_names
+

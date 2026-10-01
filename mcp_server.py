@@ -228,6 +228,35 @@ def fetch_url_content(url: str) -> str:
         return f"Failed to fetch content from '{url}' via MCP: {str(e)}"
 
 
+# ==========================================
+# Tool 8: Asynchronous DNS Interrogation via adig.exe
+# ==========================================
+@mcp.tool()
+def query_dns_adig(domain: str, record_type: str = "A", server: str = "", extra_flags: str = "") -> str:
+    """Interrogates DNS servers for specific record types (A, AAAA, MX, TXT, NS, SOA, PTR, CNAME) using adig.exe."""
+    try:
+        from tools import AdigDnsQueryTool
+        tool = AdigDnsQueryTool()
+        return tool._run(domain=domain, record_type=record_type, server=server, extra_flags=extra_flags)
+    except Exception as e:
+        return f"MCP adig query error: {str(e)}"
+
+
+# ==========================================
+# Tool 9: Asynchronous Hostname Resolution via ahost.exe
+# ==========================================
+@mcp.tool()
+def resolve_host_ahost(host: str, lookup_type: str = "u", server: str = "", domain: str = "", debug: bool = False) -> str:
+    """Resolves hostnames to dual-stack IPv4/IPv6 addresses or tests DNS reachability using ahost.exe."""
+    try:
+        from tools import AhostLookupTool
+        tool = AhostLookupTool()
+        return tool._run(host=host, lookup_type=lookup_type, server=server, domain=domain, debug=debug)
+    except Exception as e:
+        return f"MCP ahost lookup error: {str(e)}"
+
+
 if __name__ == "__main__":
     # Runs FastMCP over standard input/output transport
     mcp.run(transport="stdio")
+

@@ -1,46 +1,87 @@
 {
   "system": {
     "name": "CrewAI Conversational RAG",
-    "version": "1.0.0",
-    "description": "A multi-agent Retrieval-Augmented Generation (RAG) system built on CrewAI that answers questions grounded in a structured knowledge base.",
-    "architecture": "Sequential multi-agent pipeline: Retriever → Aggregator → Synthesizer"
+    "version": "2.0.0",
+    "description": "An enterprise multi-agent Retrieval-Augmented Generation (RAG) and host diagnostics platform built on CrewAI. Combines structured documentation search, multi-tiered memory (MySQL & Blackboard), Windows host telemetry (AggregatorHost.exe), and high-performance asynchronous DNS/network interrogation via c-ares utilities (adig.exe and ahost.exe).",
+    "architecture": "Sequential multi-agent pipeline with Model Context Protocol (FastMCP) integration: Retriever → Aggregator Host Coordinator → Conversational Synthesizer",
+    "runtime": "Python 3.12 (Windows x64)"
   },
   "llm_providers": [
     {
       "provider": "Google Gemini",
-      "models": ["gemini/gemini-2.5-flash", "gemini/gemini-2.5-pro"],
+      "models": [
+        "gemini/gemini-2.5-flash",
+        "gemini/gemini-2.5-pro",
+        "gemini/gemini-3.8-flash"
+      ],
       "env_key": "GEMINI_API_KEY",
-      "notes": "Recommended provider. Free tier available at https://aistudio.google.com/app/apikey"
+      "notes": "Primary recommended LLM provider with native tool calling and high reasoning speed."
     },
     {
       "provider": "OpenAI",
-      "models": ["gpt-4o", "gpt-4o-mini"],
+      "models": [
+        "gpt-4o",
+        "gpt-4o-mini"
+      ],
       "env_key": "OPENAI_API_KEY",
-      "notes": "Alternative provider for OpenAI-compatible models"
+      "notes": "Secondary fallback provider for OpenAI-compatible inference."
     }
   ],
   "agents": [
     {
       "name": "Knowledge Retrieval Specialist",
       "role": "Retriever",
-      "description": "Searches and retrieves accurate facts and excerpts from knowledge base documents. Grounded strictly in indexed documentation.",
-      "tools": ["Knowledge Base Search", "List Knowledge Documents", "Read Complete Document"],
+      "description": "Searches and retrieves accurate facts, documentation sections, and policy excerpts. Performs preemptive hostname resolution via ahost.exe to verify external endpoints before fetching.",
+      "tools": [
+        "Knowledge Base Search",
+        "List Knowledge Documents",
+        "Read Complete Document",
+        "AHost Lookup Tool"
+      ],
+      "mcp_tools": [
+        "MCP Knowledge Base Search",
+        "MCP Document Reader",
+        "MCP AHost Lookup Tool"
+      ],
       "allow_delegation": true,
       "position": 1
     },
     {
       "name": "Aggregator Host Specialist",
       "role": "Aggregator",
-      "description": "Aggregates, cross-examines, and synthesizes knowledge excerpts. Resolves conflicts, deduplicates findings, and optionally inspects local host diagnostics.",
-      "tools": ["Knowledge Base Search", "Read Complete Document", "Aggregator Host Status Inspector"],
+      "description": "Central coordinator that aggregates, cross-examines, and synthesizes retrieved findings. Resolves conflicts, manages MySQL shared memory and FileZilla FTP storage, monitors Windows AggregatorHost.exe process health, and conducts low-level DNS diagnostics via adig.exe and ahost.exe.",
+      "tools": [
+        "Knowledge Base Search",
+        "Read Complete Document",
+        "Aggregator Host Status Inspector",
+        "ADig DNS Query Tool",
+        "AHost Lookup Tool",
+        "MySQL Query Tool",
+        "MySQL Shared Blackboard Tool",
+        "XAMPP FileZilla FTP Storage Tool",
+        "XAMPP Mercury Mail Tool"
+      ],
+      "mcp_tools": [
+        "MCP Host Telemetry Inspector",
+        "MCP Process Health Inspector",
+        "MCP Shared Blackboard Writer",
+        "MCP Shared Blackboard Reader",
+        "MCP ADig DNS Query Tool",
+        "MCP AHost Lookup Tool"
+      ],
       "allow_delegation": false,
       "position": 2
     },
     {
       "name": "Conversational Synthesizer",
       "role": "Synthesizer",
-      "description": "Synthesizes retrieved and aggregated knowledge into warm, natural, and well-cited conversational responses for the user.",
-      "tools": [],
+      "description": "Synthesizes multi-source facts and diagnostic telemetry into clear, polite, and well-cited conversational answers for end users, dispatching email alerts when requested.",
+      "tools": [
+        "XAMPP Mercury Mail Tool"
+      ],
+      "mcp_tools": [
+        "MCP URL Content Fetcher"
+      ],
       "allow_delegation": true,
       "position": 3
     }
@@ -51,54 +92,251 @@
       "class": "KnowledgeSearchTool",
       "description": "Keyword and relevance-based search across all knowledge base documents (.md, .txt, .json, .rst, .csv).",
       "input": "query string",
-      "output": "Ranked excerpts with source document names"
+      "output": "Ranked excerpts with source document names and section indices"
     },
     {
       "name": "List Knowledge Documents",
       "class": "ListKnowledgeDocumentsTool",
-      "description": "Lists all indexed documents in the knowledge directory with file sizes.",
+      "description": "Lists all indexed documents and diagnostic files in the knowledge directory with file sizes.",
       "input": "none",
-      "output": "Document list with sizes"
+      "output": "Catalog of document names, file formats, and byte counts"
     },
     {
       "name": "Read Complete Document",
       "class": "KnowledgeReadDocumentTool",
-      "description": "Reads the full content of a specific knowledge base document by name.",
+      "description": "Reads the entire content of a specific knowledge base document by name.",
       "input": "document_name string",
-      "output": "Full document text"
+      "output": "Full document markdown or text content"
     },
     {
       "name": "Aggregator Host Status Inspector",
       "class": "AggregatorHostStatusTool",
-      "description": "Inspects local host system telemetry, CPU architecture, and Windows AggregatorHost.exe process health.",
+      "description": "Inspects local host system telemetry, CPU architecture, OS release, and Windows AggregatorHost.exe process health.",
       "input": "query string (process | system | all)",
-      "output": "Host diagnostics report"
+      "output": "Host diagnostics report with platform details and tasklist process status"
     },
     {
       "name": "JSON Knowledge Search",
       "class": "JsonKnowledgeSearchTool",
       "description": "Searches exclusively through structured JSON knowledge files, returning parsed key-value data relevant to the query.",
       "input": "query string",
-      "output": "Matching JSON fields and values"
+      "output": "Matching JSON fields, hierarchical key paths, and values"
+    },
+    {
+      "name": "ADig DNS Query Tool",
+      "class": "AdigDnsQueryTool",
+      "executable": "adig.exe",
+      "library": "libcares-2.dll",
+      "version": "1.34.8",
+      "description": "Asynchronous DNS interrogation and query diagnostic tool built on the c-ares resolver engine. Interrogates name servers for specified record types (A, AAAA, MX, TXT, NS, SOA, CNAME, PTR, SRV), parses response sections, reports TTL and latency, and executes reverse lookups.",
+      "input": {
+        "domain": "Target domain name, host, or IP string (e.g., 'google.com', '127.0.0.1')",
+        "record_type": "DNS record type string (A, AAAA, MX, TXT, NS, SOA, CNAME, PTR, ANY)",
+        "server": "Optional custom DNS server IP address (e.g., '8.8.8.8', '1.1.1.1')",
+        "extra_flags": "Optional command flags (e.g., '+tcp', '+dns0x20', '+adflag', '-x')"
+      },
+      "output": "Structured DNS report with question, answer, authority, and additional record sections"
+    },
+    {
+      "name": "AHost Lookup Tool",
+      "class": "AhostLookupTool",
+      "executable": "ahost.exe",
+      "library": "libcares-2.dll",
+      "version": "1.34.8",
+      "description": "High-speed asynchronous hostname and IP address resolver built on c-ares. Performs dual-stack IPv4 (A) and IPv6 (AAAA) resolution, validates host reachability, queries specific DNS servers with round-robin fallback, and provides resolver debugging output.",
+      "input": {
+        "host": "Target hostname or IP address string (e.g., 'google.com', 'localhost')",
+        "lookup_type": "Resolution type ('u' for dual-stack IPv4/IPv6, 'a' for IPv4 only, 'aaaa' for IPv6 only)",
+        "server": "Optional target DNS server IP address",
+        "domain": "Optional search domain to append",
+        "debug": "Boolean flag for real-time resolver trace debugging"
+      },
+      "output": "List of resolved IPv4 and IPv6 addresses with resolution status"
+    },
+    {
+      "name": "MySQL Query Tool",
+      "class": "MySQLQueryTool",
+      "description": "Executes read-only SQL queries (SELECT, SHOW, DESCRIBE) against the XAMPP MySQL database 'crewai_memory'.",
+      "input": "query string (SELECT ...)",
+      "output": "JSON-formatted query result rows"
+    },
+    {
+      "name": "MySQL Shared Blackboard Tool",
+      "class": "MySQLBlackboardTool",
+      "description": "Reads, writes, and lists shared agent facts and intermediate discoveries in the XAMPP MySQL shared_blackboard table.",
+      "input": "action (read|write|list), key_name, value_data, session_id",
+      "output": "Confirmation message or stored blackboard value"
+    },
+    {
+      "name": "XAMPP FileZilla FTP Storage Tool",
+      "class": "FTPStorageTool",
+      "description": "Uploads, lists, and downloads shared files, logs, and datasets in the XAMPP FileZilla FTP server agent_storage repository.",
+      "input": "action (list|upload|download), filename, content",
+      "output": "Directory listing or file content payload"
+    },
+    {
+      "name": "XAMPP Mercury Mail Tool",
+      "class": "EmailNotificationTool",
+      "description": "Dispatches SMTP alert notifications and inspects POP3 incoming mail via the XAMPP Mercury Mail Server.",
+      "input": "action (send|check), recipient, subject, body",
+      "output": "Dispatch confirmation or mailbox message count"
     }
   ],
+  "network_and_dns_capabilities": {
+    "engine": "c-ares Asynchronous DNS Resolver Subsystem",
+    "version": "1.34.8",
+    "bundled_binaries": {
+      "adig.exe": {
+        "path": "knowledge/adig.exe",
+        "shared_library": "knowledge/libcares-2.dll",
+        "size_bytes": 73935,
+        "purpose": "Asynchronous DNS Interrogation (DiG clone)",
+        "supported_record_types": [
+          "A",
+          "AAAA",
+          "MX",
+          "TXT",
+          "NS",
+          "SOA",
+          "PTR",
+          "CNAME",
+          "SRV",
+          "NAPTR",
+          "ANY"
+        ],
+        "query_classes": [
+          "IN (Internet)",
+          "CH (Chaos)",
+          "HS (Hesiod)"
+        ],
+        "command_options": {
+          "@server": "Direct query to specific nameserver IP or URI",
+          "-p port": "Send query to alternative port (default 53)",
+          "-q name": "Explicit domain query name",
+          "-t type": "Resource record type to query",
+          "-x addr": "Reverse lookup (auto-constructs in-addr.arpa or ip6.arpa PTR query)",
+          "-c class": "Query class (default IN)",
+          "+tcp": "Force TCP transport instead of default UDP",
+          "+dns0x20": "Enable DNS 0x20 random case bit encoding for cache poisoning defense",
+          "+bufsize=#": "EDNS0 UDP buffer size (default 1232)",
+          "+adflag": "Set Authentic Data (AD) bit for DNSSEC validation",
+          "+cdflag": "Set Checking Disabled (CD) bit",
+          "+[no]recurse": "Toggle Recursion Desired (RD) flag (default on)",
+          "+retry=#": "Configurable query retry count (default 3)",
+          "+[no]stats": "Toggle query performance statistics and RTT display"
+        },
+        "use_cases": [
+          "Validating domain MX mail routing before dispatching SMTP notifications",
+          "Verifying SPF, DKIM, and DMARC TXT records for email deliverability",
+          "Auditing authoritative nameservers (NS) and SOA zone serials",
+          "Testing DNS resolution latency and nameserver failover resilience",
+          "Performing reverse DNS lookups on client IP addresses"
+        ]
+      },
+      "ahost.exe": {
+        "path": "knowledge/ahost.exe",
+        "shared_library": "knowledge/libcares-2.dll",
+        "size_bytes": 53909,
+        "purpose": "Asynchronous Hostname Resolution (Host clone)",
+        "address_families": [
+          "IPv4 (A records)",
+          "IPv6 (AAAA records)",
+          "Dual-Stack (both A and AAAA records)"
+        ],
+        "command_options": {
+          "-t u": "Default mode: resolves and displays both IPv4 and IPv6 addresses",
+          "-t a": "Print IPv4 (A) record only",
+          "-t aaaa": "Print IPv6 (AAAA) record only",
+          "-s server": "Connect to specified DNS server with round-robin fallback",
+          "-D domain": "Specify custom domain search suffix",
+          "-d": "Enable detailed resolver debugging output",
+          "-h": "Display usage help and version"
+        },
+        "use_cases": [
+          "Rapid dual-stack connectivity and reachability testing for internal and external endpoints",
+          "Validating internal localhost and LAN hostnames (e.g., MySQL, FTP, Mercury servers)",
+          "Resolving upstream API domains before establishing HTTP or WebSocket connections",
+          "Testing round-robin DNS nameserver responsiveness under load"
+        ]
+      }
+    }
+  },
+  "host_diagnostics": {
+    "process_telemetry": {
+      "monitored_process": "AggregatorHost.exe",
+      "platform": "Windows",
+      "command": "tasklist /FI \"IMAGENAME eq AggregatorHost.exe\" /FO LIST",
+      "description": "Inspects Windows AggregatorHost.exe background process health, PID, and memory footprint."
+    },
+    "hardware_telemetry": {
+      "attributes": [
+        "Operating System Release and Build",
+        "CPU Architecture and Instruction Set",
+        "Logical Core and Thread Count",
+        "Host Node Name",
+        "Active Python Runtime Version"
+      ]
+    }
+  },
+  "model_context_protocol": {
+    "server_name": "CrewAI-Conversational-RAG-MCP",
+    "transport": "stdio",
+    "fastmcp_tools": [
+      {
+        "name": "get_system_telemetry",
+        "description": "Returns platform specs, CPU count, and Python runtime info."
+      },
+      {
+        "name": "inspect_host_process",
+        "description": "Queries Windows tasklist to verify AggregatorHost.exe status."
+      },
+      {
+        "name": "query_dns_adig",
+        "description": "Executes adig.exe for asynchronous DNS interrogation (A, AAAA, MX, TXT, etc.)."
+      },
+      {
+        "name": "resolve_host_ahost",
+        "description": "Executes ahost.exe for fast dual-stack hostname resolution."
+      },
+      {
+        "name": "search_mcp_knowledge",
+        "description": "Searches documentation files across knowledge base via MCP."
+      },
+      {
+        "name": "read_mcp_document",
+        "description": "Reads full content of a specific knowledge file via MCP."
+      },
+      {
+        "name": "mcp_blackboard_write",
+        "description": "Saves agent findings to the multi-agent shared blackboard via MCP."
+      },
+      {
+        "name": "mcp_blackboard_read",
+        "description": "Retrieves saved findings from the shared blackboard via MCP."
+      },
+      {
+        "name": "fetch_url_content",
+        "description": "Fetches and sanitizes text content from a web URL."
+      }
+    ]
+  },
   "pipeline": {
     "process": "sequential",
     "steps": [
       {
         "step": 1,
         "agent": "Knowledge Retrieval Specialist",
-        "task": "Search knowledge base and extract relevant evidence"
+        "task": "Extract relevant evidence from knowledge base documents and verify host reachability via ahost.exe if querying network endpoints."
       },
       {
         "step": 2,
         "agent": "Aggregator Host Specialist",
-        "task": "Aggregate, cross-reference, and validate retrieved facts"
+        "task": "Aggregate, cross-reference, and validate retrieved facts; inspect Windows AggregatorHost.exe and execute adig.exe/ahost.exe network diagnostics if queried."
       },
       {
         "step": 3,
         "agent": "Conversational Synthesizer",
-        "task": "Synthesize final conversational response with citations"
+        "task": "Synthesize final conversational response with source citations and dispatch email alerts if requested."
       }
     ]
   },
@@ -113,10 +351,32 @@
     "knowledge_index": "GET /api/ai/knowledge/index — Structured knowledge index",
     "knowledge_search": "POST /api/ai/knowledge/search — Direct lightweight knowledge search"
   },
-  "supported_knowledge_formats": [".md", ".txt", ".json", ".csv", ".rst"],
+  "supported_knowledge_formats": [
+    ".md",
+    ".txt",
+    ".json",
+    ".csv",
+    ".rst",
+    ".exe (c-ares diagnostic binaries)"
+  ],
   "session_memory": {
-    "type": "in-memory per session",
-    "max_turns_context": 5,
-    "persistence": "session-scoped (resets on server restart)"
+    "layers": [
+      {
+        "layer": "in_memory_context",
+        "type": "Sliding window of recent dialogue turns",
+        "max_turns": 5
+      },
+      {
+        "layer": "mysql_persistent_memory",
+        "database": "crewai_memory",
+        "tables": ["conversation_history", "agent_logs", "shared_blackboard"],
+        "persistence": "Database-backed across server restarts"
+      },
+      {
+        "layer": "filezilla_artifact_storage",
+        "directory": "agent_storage",
+        "protocol": "FTP / HTTP dual-access"
+      }
+    ]
   }
 }

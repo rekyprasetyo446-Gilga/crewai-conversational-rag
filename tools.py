@@ -547,3 +547,203 @@ class EmailNotificationTool(BaseTool):
             return f"Unknown action '{action}'. Supported actions: 'send', 'check'."
 
 
+class AdigDnsInput(BaseModel):
+    domain: str = Field(..., description="The domain name, host, or IP address to query (e.g., 'google.com', 'cloudflare.com', '127.0.0.1').")
+    record_type: str = Field(default="A", description="DNS record type to look up: 'A', 'AAAA', 'MX', 'TXT', 'NS', 'SOA', 'CNAME', 'PTR', 'SRV', or 'ANY'.")
+    server: str = Field(default="", description="Optional custom DNS server IP or address (e.g., '8.8.8.8', '1.1.1.1'). If empty, uses system default resolver.")
+    extra_flags: str = Field(default="", description="Optional extra query flags (e.g., '+tcp', '+dns0x20', '+adflag', or '-x' for reverse lookups).")
+
+
+class AdigDnsQueryTool(BaseTool):
+    name: str = "ADig DNS Query Tool"
+    description: str = (
+        "Performs low-level asynchronous DNS interrogation and query diagnostics using adig.exe (c-ares engine). "
+        "Retrieves authoritative DNS records (A, AAAA, MX, TXT, NS, SOA, CNAME, PTR), inspects response codes, TTLs, "
+        "and validates domain resolution."
+    )
+    args_schema: Type[BaseModel] = AdigDnsInput
+
+    def _run(self, domain: str, record_type: str = "A", server: str = "", extra_flags: str = "") -> str:
+        import subprocess
+        import os
+        from pathlib import Path
+
+        base_dir = Path(__file__).resolve().parent
+        candidate_paths = [
+            base_dir / "knowledge" / "adig.exe",
+            Path(KNOWLEDGE_DIR) / "adig.exe",
+            base_dir / "adig.exe",
+        ]
+        adig_exe = None
+        for p in candidate_paths:
+            if p.exists():
+                adig_exe = p
+                break
+
+        if not adig_exe:
+            import shutil
+            which_adig = shutil.which("adig.exe") or shutil.which("adig")
+            if which_adig:
+                adig_exe = Path(which_adig)
+
+        if not adig_exe or not adig_exe.exists():
+            return f"Error: adig.exe executable not found in knowledge directory ({KNOWLEDGE_DIR}) or system PATH."
+
+        dll_dir = str(adig_exe.parent.resolve())
+        env = os.environ.copy()
+        git_mingw = r"C:\Program Files\Git\mingw64\bin"
+        paths = [dll_dir]
+        if os.path.exists(git_mingw):
+            paths.append(git_mingw)
+        if "PATH" in env:
+            paths.append(env["PATH"])
+        env["PATH"] = os.pathsep.join(paths)
+
+        cmd = [str(adig_exe)]
+        if server.strip():
+            srv = server.strip()
+            if not srv.startswith("@"):
+                srv = f"@{srv}"
+            cmd.append(srv)
+
+        domain_clean = domain.strip()
+        if extra_flags.strip():
+            flags = extra_flags.strip().split()
+            cmd.extend(flags)
+
+        if "-x" not in cmd:
+            cmd.append(domain_clean)
+            if record_type.strip() and "-t" not in cmd:
+                cmd.append(record_type.strip().upper())
+        else:
+            if domain_clean not in cmd:
+                cmd.append(domain_clean)
+
+        try:
+            res = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env=env,
+                stdin=subprocess.DEVNULL
+            )
+            out = res.stdout.strip()
+            err = res.stderr.strip()
+            if res.returncode != 0 and not out:
+                return f"ADig DNS execution failed (exit code {res.returncode}):\n{err or 'No output returned.'}"
+
+            result = [
+                f"### [ADig DNS Query Report: {domain_clean} ({record_type})]",
+                f"- **Command Executed**: `{' '.join(cmd)}`",
+                f"- **Engine**: c-ares adig.exe v1.34.8",
+                "```text",
+                out if out else (err or "No records returned."),
+                "```"
+            ]
+            return "\n".join(result)
+        except subprocess.TimeoutExpired:
+            return f"Error: DNS query timed out after 10s for domain '{domain_clean}' via adig.exe."
+        except Exception as e:
+            return f"Error executing adig.exe: {str(e)}"
+
+
+class AhostLookupInput(BaseModel):
+    host: str = Field(..., description="Hostname or IP address to resolve (e.g., 'google.com', 'localhost', 'github.com').")
+    lookup_type: str = Field(default="u", description="Record resolution type: 'u' (dual-stack IPv4 & IPv6), 'a' (IPv4 only), or 'aaaa' (IPv6 only).")
+    server: str = Field(default="", description="Optional custom DNS server IP to query directly. Leave empty to use system default.")
+    domain: str = Field(default="", description="Optional search domain to append.")
+    debug: bool = Field(default=False, description="Whether to include extra verbose resolver debug output.")
+
+
+class AhostLookupTool(BaseTool):
+    name: str = "AHost Lookup Tool"
+    description: str = (
+        "Performs fast asynchronous hostname and IP address resolution using ahost.exe (c-ares engine). "
+        "Resolves dual-stack IPv4 (A) and IPv6 (AAAA) addresses, validates domain reachability, and verifies host addresses."
+    )
+    args_schema: Type[BaseModel] = AhostLookupInput
+
+    def _run(self, host: str, lookup_type: str = "u", server: str = "", domain: str = "", debug: bool = False) -> str:
+        import subprocess
+        import os
+        from pathlib import Path
+
+        base_dir = Path(__file__).resolve().parent
+        candidate_paths = [
+            base_dir / "knowledge" / "ahost.exe",
+            Path(KNOWLEDGE_DIR) / "ahost.exe",
+            base_dir / "ahost.exe",
+        ]
+        ahost_exe = None
+        for p in candidate_paths:
+            if p.exists():
+                ahost_exe = p
+                break
+
+        if not ahost_exe:
+            import shutil
+            which_ahost = shutil.which("ahost.exe") or shutil.which("ahost")
+            if which_ahost:
+                ahost_exe = Path(which_ahost)
+
+        if not ahost_exe or not ahost_exe.exists():
+            return f"Error: ahost.exe executable not found in knowledge directory ({KNOWLEDGE_DIR}) or system PATH."
+
+        dll_dir = str(ahost_exe.parent.resolve())
+        env = os.environ.copy()
+        git_mingw = r"C:\Program Files\Git\mingw64\bin"
+        paths = [dll_dir]
+        if os.path.exists(git_mingw):
+            paths.append(git_mingw)
+        if "PATH" in env:
+            paths.append(env["PATH"])
+        env["PATH"] = os.pathsep.join(paths)
+
+        cmd = [str(ahost_exe)]
+        if debug:
+            cmd.append("-d")
+        if domain.strip():
+            cmd.extend(["-D", domain.strip()])
+        if server.strip():
+            srv = server.strip().lstrip("@")
+            cmd.extend(["-s", srv])
+
+        lt = lookup_type.strip().lower()
+        if lt in ["a", "aaaa", "u"]:
+            cmd.extend(["-t", lt])
+
+        host_clean = host.strip()
+        cmd.append(host_clean)
+
+        try:
+            res = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env=env,
+                stdin=subprocess.DEVNULL
+            )
+            out = res.stdout.strip()
+            err = res.stderr.strip()
+            if res.returncode != 0 and not out:
+                return f"AHost resolution failed (exit code {res.returncode}):\n{err or 'Host could not be resolved.'}"
+
+            result = [
+                f"### [AHost Resolution Report: {host_clean}]",
+                f"- **Command Executed**: `{' '.join(cmd)}`",
+                f"- **Engine**: c-ares ahost.exe v1.34.8",
+                "- **Resolved Addresses**:",
+                "```text",
+                out if out else (err or "No addresses returned."),
+                "```"
+            ]
+            return "\n".join(result)
+        except subprocess.TimeoutExpired:
+            return f"Error: Host resolution timed out after 10s for '{host_clean}' via ahost.exe."
+        except Exception as e:
+            return f"Error executing ahost.exe: {str(e)}"
+
+
+

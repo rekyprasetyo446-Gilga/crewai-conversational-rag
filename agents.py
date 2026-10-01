@@ -15,6 +15,8 @@ from tools import (
     MySQLBlackboardTool,
     FTPStorageTool,
     EmailNotificationTool,
+    AdigDnsQueryTool,
+    AhostLookupTool,
 )
 from mcp_manager import (
     get_agent_mcps,
@@ -25,6 +27,8 @@ from mcp_manager import (
     MCPBlackboardWriteTool,
     MCPBlackboardReadTool,
     MCPURLFetcherTool,
+    MCPAdigQueryTool,
+    MCPAhostLookupTool,
 )
 
 
@@ -41,19 +45,21 @@ def get_retriever_agent(
         KnowledgeSearchTool(),
         ListKnowledgeDocumentsTool(),
         KnowledgeReadDocumentTool(),
+        AhostLookupTool(),
     ]
     if include_direct_mcp_tools:
         tools.extend([
             MCPKnowledgeSearchTool(),
             MCPDocumentReaderTool(),
+            MCPAhostLookupTool(),
         ])
 
     return Agent(
         role="Knowledge Retrieval Specialist",
-        goal="Query the knowledge base and MCP endpoints to retrieve accurate, verified facts and excerpts to answer user inquiries.",
+        goal="Query the knowledge base, verify host reachability via ahost, and query MCP endpoints to retrieve accurate, verified facts and excerpts to answer user inquiries.",
         backstory=(
             "You are a dedicated information retrieval expert. You navigate documentation, "
-            "technical manuals, company policies, and FAQs with precision using native retrieval and "
+            "technical manuals, company policies, FAQs, and perform hostname lookups with precision using native retrieval and "
             "Model Context Protocol (MCP) tools. You ensure that all information is strictly grounded in the knowledge documents, noting exact sources."
         ),
         tools=tools,
@@ -69,13 +75,15 @@ def get_aggregator_host_agent(
     mcps: Optional[List[Union[str, MCPServerConfig]]] = None,
     include_direct_mcp_tools: bool = True
 ) -> Agent:
-    """Creates the Aggregator Host Specialist Agent with MCP telemetry and shared memory tools."""
+    """Creates the Aggregator Host Specialist Agent with MCP telemetry, DNS diagnostics, and shared memory tools."""
     agent_mcps = mcps if mcps is not None else get_agent_mcps("aggregator_host")
 
     tools = [
         KnowledgeSearchTool(),
         KnowledgeReadDocumentTool(),
         AggregatorHostStatusTool(),
+        AdigDnsQueryTool(),
+        AhostLookupTool(),
         MySQLQueryTool(),
         MySQLBlackboardTool(),
         FTPStorageTool(),
@@ -87,6 +95,8 @@ def get_aggregator_host_agent(
             MCPProcessInspectorTool(),
             MCPBlackboardWriteTool(),
             MCPBlackboardReadTool(),
+            MCPAdigQueryTool(),
+            MCPAhostLookupTool(),
         ])
 
     return Agent(

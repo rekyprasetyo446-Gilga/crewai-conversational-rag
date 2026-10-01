@@ -24,18 +24,29 @@ _AGENT_METADATA = [
         "role": "Retriever",
         "description": (
             "Searches and retrieves accurate facts and excerpts from knowledge base documents. "
-            "Strictly grounded in indexed documentation."
+            "Strictly grounded in indexed documentation with integrated AHost DNS verification."
         ),
-        "tools": ["Knowledge Base Search", "List Knowledge Documents", "Read Complete Document"],
+        "tools": ["Knowledge Base Search", "List Knowledge Documents", "Read Complete Document", "AHost Lookup Tool"],
     },
     {
         "name": "Aggregator Host Specialist",
         "role": "Aggregator",
         "description": (
             "Aggregates, cross-examines, and synthesizes knowledge excerpts. "
-            "Resolves conflicts, deduplicates findings, and inspects local host diagnostics when relevant."
+            "Resolves conflicts, deduplicates findings, inspects local host diagnostics (AggregatorHost.exe), "
+            "and performs deep asynchronous DNS diagnostics via adig.exe and ahost.exe."
         ),
-        "tools": ["Knowledge Base Search", "Read Complete Document", "Aggregator Host Status Inspector"],
+        "tools": [
+            "Knowledge Base Search",
+            "Read Complete Document",
+            "Aggregator Host Status Inspector",
+            "ADig DNS Query Tool",
+            "AHost Lookup Tool",
+            "MySQL Query Tool",
+            "MySQL Shared Blackboard Tool",
+            "XAMPP FileZilla FTP Storage Tool",
+            "XAMPP Mercury Mail Tool",
+        ],
     },
     {
         "name": "Conversational Synthesizer",
@@ -44,7 +55,7 @@ _AGENT_METADATA = [
             "Synthesizes retrieved and aggregated knowledge into warm, natural, "
             "and well-cited conversational responses for the user."
         ),
-        "tools": [],
+        "tools": ["XAMPP Mercury Mail Tool"],
     },
 ]
 
@@ -74,6 +85,36 @@ _TOOL_METADATA = [
             "Searches exclusively through structured JSON knowledge files, "
             "returning parsed key-value data relevant to the query."
         ),
+    },
+    {
+        "name": "ADig DNS Query Tool",
+        "description": (
+            "Performs low-level asynchronous DNS interrogation (A, AAAA, MX, TXT, NS, SOA, PTR, CNAME) "
+            "using adig.exe (c-ares engine)."
+        ),
+    },
+    {
+        "name": "AHost Lookup Tool",
+        "description": (
+            "Performs fast asynchronous hostname and dual-stack IP address resolution (IPv4 & IPv6) "
+            "using ahost.exe (c-ares engine)."
+        ),
+    },
+    {
+        "name": "MySQL Query Tool",
+        "description": "Executes read-only SQL queries against the XAMPP MySQL database 'crewai_memory'.",
+    },
+    {
+        "name": "MySQL Shared Blackboard Tool",
+        "description": "Reads and writes shared agent facts to the XAMPP MySQL shared_blackboard table.",
+    },
+    {
+        "name": "XAMPP FileZilla FTP Storage Tool",
+        "description": "Uploads, lists, and downloads files in centralized FTP storage on FileZilla.",
+    },
+    {
+        "name": "XAMPP Mercury Mail Tool",
+        "description": "Dispatches SMTP alert notifications and checks POP3 incoming mail via Mercury.",
     },
 ]
 

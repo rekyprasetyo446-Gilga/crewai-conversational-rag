@@ -30,15 +30,16 @@ def create_aggregation_host_task(agent: Agent, user_query: str, chat_history: st
             f"Recent conversation context:\n{chat_history if chat_history else 'No prior messages.'}\n\n"
             "Review the findings from the Knowledge Retrieval Specialist and perform deep aggregation:\n"
             "1. Cross-reference facts across documents, deduplicating repetitive points and reconciling any discrepancies.\n"
-            "2. If the user's query relates to host system status, environment specs, or Windows AggregatorHost process health, "
-            "use the Aggregator Host Status Inspector tool to collect live host diagnostics.\n"
+            "2. If the user's query relates to host system status, environment specs, Windows AggregatorHost process health, "
+            "or DNS/network diagnostics, use the Aggregator Host Status Inspector, ADig DNS Query Tool (adig.exe), or AHost Lookup Tool (ahost.exe) "
+            "to collect live host and network diagnostics.\n"
             "3. Compile an authoritative, structured aggregation brief with verified document sources, eliminating any ungrounded assertions."
         ),
         expected_output=(
             "A comprehensive, structured aggregation dossier containing:\n"
             "- Consolidated factual findings with verified document sources (e.g., 'company_handbook.md', 'product_manual.md').\n"
             "- Resolution of any ambiguous or conflicting statements.\n"
-            "- Relevant host system diagnostics or AggregatorHost telemetry if queried.\n"
+            "- Relevant host system diagnostics, AggregatorHost telemetry, or c-ares DNS/network diagnostic results if queried.\n"
             "- A synthesized factual foundation ready for the Conversational Synthesizer."
         ),
         agent=agent
