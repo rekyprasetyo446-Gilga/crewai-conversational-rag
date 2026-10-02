@@ -1,6 +1,6 @@
 """
 AdSense Router: Serves /ads.txt for Google crawler compliance,
-and endpoints for AdSense Publisher verification & transaction resolution.
+and endpoints for AdSense Publisher verification, account binding, and transaction resolution.
 """
 
 from fastapi import APIRouter, Depends, Response, HTTPException, status
@@ -11,9 +11,9 @@ from api.schemas.adsense import (
     AdSenseResolveResponse,
     AdSenseStatusResponse,
     AdSenseLedgerResponse,
+    AdSenseTransaction,
     AdSenseBindRequest,
     AdSenseBindResponse,
-    AdSenseTransaction,
 )
 from api.services.adsense_service import AdSenseService
 
@@ -57,13 +57,25 @@ async def adsense_status_endpoint(service: AdSenseService = Depends(get_adsense_
 @router.get(
     "/api/adsense/ledger",
     response_model=AdSenseLedgerResponse,
-    AdSenseBindRequest,
-    AdSenseBindResponse,
     summary="List received AdSense transactions",
     description="Returns the history of reconciled AdSense payout transactions.",
 )
 async def adsense_ledger_endpoint(service: AdSenseService = Depends(get_adsense_service)) -> AdSenseLedgerResponse:
     return service.get_ledger()
+
+
+@router.post(
+    "/api/adsense/bind",
+    response_model=AdSenseBindResponse,
+    summary="Bind user Google AdSense Publisher Account",
+    description="Updates publisher ID across ads.txt, knowledge specs, .env, and runtime.",
+)
+async def adsense_bind_endpoint(
+    req: AdSenseBindRequest,
+    service: AdSenseService = Depends(get_adsense_service),
+) -> AdSenseBindResponse:
+    res = service.bind_account(req.publisher_id, req.certification_authority_id)
+    return AdSenseBindResponse(**res)
 
 
 @router.post(
@@ -90,17 +102,3 @@ async def adsense_record_endpoint(
     service: AdSenseService = Depends(get_adsense_service),
 ) -> AdSenseTransaction:
     return service.record_transaction(txn)
-
-
-@router.post(
-    "/api/adsense/bind",
-    response_model=AdSenseBindResponse,
-    summary="Bind user Google AdSense Publisher Account",
-    description="Updates publisher ID across ads.txt, knowledge specs, .env, and runtime.",
-)
-async def adsense_bind_endpoint(
-    req: AdSenseBindRequest,
-    service: AdSenseService = Depends(get_adsense_service),
-) -> AdSenseBindResponse:
-    res = service.bind_account(req.publisher_id, req.certification_authority_id)
-    return AdSenseBindResponse(**res)
