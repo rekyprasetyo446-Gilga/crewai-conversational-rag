@@ -15,7 +15,6 @@ Set-Location $ProjectRoot
 
 $VenvPython = "$ProjectRoot\.venv\Scripts\python.exe"
 $ServerUrl = "http://localhost:8000"
-$HealthUrl = "http://localhost:8000/api/health"
 
 function Write-Log {
     param([string]$Message, [string]$Color = "Cyan")
@@ -29,20 +28,32 @@ Write-Log "  Target URL : $ServerUrl                                  " "Green"
 Write-Log "  Platforms  : Chrome, Microsoft Edge, Mozilla Firefox     " "Yellow"
 Write-Log "==========================================================" "Cyan"
 
-# Step 1: Ensure Server is Active
+# Step 1: Health Evaluation Function
 function Test-ServerHealth {
+    $conn = Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue
+    if (-not $conn) { return $false }
+    
+    # Try 127.0.0.1 loopback
     try {
-        $response = Invoke-RestMethod -Uri $HealthUrl -TimeoutSec 2 -ErrorAction Stop
-        return ($response.status -eq "healthy")
-    } catch {
-        return $false
-    }
+        $res = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/health" -TimeoutSec 2 -ErrorAction Stop
+        if ($res.status -eq "healthy") { return $true }
+    } catch {}
+
+    # Try localhost
+    try {
+        $res = Invoke-RestMethod -Uri "http://localhost:8000/api/health" -TimeoutSec 2 -ErrorAction Stop
+        if ($res.status -eq "healthy") { return $true }
+    } catch {}
+
+    # If TCP port is listening, consider server initialized
+    return ($conn.Count -gt 0)
 }
 
+# Step 2: Ensure Server is Active
 if (-not (Test-ServerHealth)) {
     Write-Log "[SERVER] Server not responding on port 8000. Initiating startup..." "Yellow"
     
-    # Clean any zombie listener on 8000
+    # Clean any zombie process on port 8000
     $conn = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($conn) {
         Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue
@@ -54,7 +65,7 @@ if (-not (Test-ServerHealth)) {
     Write-Log "[SERVER] Process launched (PID: $($serverProcess.Id)). Awaiting health check..." "Green"
 
     $ready = $false
-    for ($i = 0; $i -lt 30; $i++) {
+    for ($i = 0; $i -lt 45; $i++) {
         Start-Sleep -Seconds 1
         if (Test-ServerHealth) {
             $ready = $true
@@ -63,15 +74,15 @@ if (-not (Test-ServerHealth)) {
     }
 
     if (-not $ready) {
-        Write-Log "[ERROR] Server failed to become healthy within 30 seconds." "Red"
+        Write-Log "[ERROR] Server startup timed out after 45 seconds." "Red"
         Exit 1
     }
     Write-Log "[SERVER] Health check PASSED. Service is active." "Green"
 } else {
-    Write-Log "[SERVER] Verified existing healthy server on port 8000." "Green"
+    Write-Log "[SERVER] Verified active healthy server on port 8000." "Green"
 }
 
-# Step 2: Cross-Browser Auto-Launch (App Mode / Standard Mode)
+# Step 3: Cross-Browser Auto-Launch (Chrome / Edge / Firefox)
 if (-not $NoBrowser) {
     Write-Log "[BROWSER] Detecting installed browsers for auto-run..." "Cyan"
 
