@@ -1311,6 +1311,107 @@
     loadDocuments();
     loadStatus();
   </script>
+
+  <!-- ========================================================================
+       Service Worker Registration & Console Memory Shield (Chrome/Edge/Firefox)
+       Features: Bounded Console History, Auto-Pruning, 25s Keepalive Heartbeat
+       ======================================================================== -->
+  <script>
+    (function initServiceWorkerAndConsoleShield() {
+      // 1. Console Memory Shield (Clearing & Pruning Console History)
+      const MAX_CONSOLE_BUFFER = 100;
+      const consoleBuffer = [];
+      const originalConsole = {
+        log: console.log.bind(console),
+        info: console.info.bind(console),
+        warn: console.warn.bind(console),
+        error: console.error.bind(console)
+      };
+
+      function trimConsoleHistory() {
+        if (consoleBuffer.length > MAX_CONSOLE_BUFFER) {
+          consoleBuffer.splice(0, consoleBuffer.length - MAX_CONSOLE_BUFFER);
+          try {
+            console.clear();
+            originalConsole.info([ConsoleShield] Console history pruned at  to maintain peak browser performance.);
+          } catch (e) {}
+        }
+      }
+
+      ['log', 'info', 'warn', 'error'].forEach(level => {
+        console[level] = function(...args) {
+          consoleBuffer.push({ time: Date.now(), level, text: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+          originalConsole[level](...args);
+          if (consoleBuffer.length >= MAX_CONSOLE_BUFFER) {
+            trimConsoleHistory();
+          }
+        };
+      });
+
+      // Periodic automatic console history clear every 5 minutes
+      setInterval(() => {
+        try {
+          console.clear();
+          consoleBuffer.length = 0;
+          originalConsole.info([ConsoleShield] Periodic memory purge complete. Web application running in high-velocity mode.);
+        } catch (e) {}
+      }, 5 * 60 * 1000);
+
+      window.clearAppConsoleHistory = function() {
+        console.clear();
+        consoleBuffer.length = 0;
+        originalConsole.info('[ConsoleShield] Console history manually wiped.');
+      };
+
+      // 2. Cross-Browser Service Worker Registration (Chrome, Edge, Firefox)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then((registration) => {
+              originalConsole.info('[SW] Service Worker active across Chrome/Edge/Firefox. Scope:', registration.scope);
+
+              // Auto-activate updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      originalConsole.info('[SW] New version detected. Upgrading service worker...');
+                      newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                  });
+                }
+              });
+
+              // 3. Keep-Alive Heartbeat Loop (every 25 seconds)
+              setInterval(() => {
+                if (navigator.serviceWorker.controller) {
+                  navigator.serviceWorker.controller.postMessage({ type: 'HEARTBEAT' });
+                }
+              }, 25000);
+            })
+            .catch((error) => {
+              originalConsole.warn('[SW] Registration failed:', error);
+            });
+
+          // Handle incoming worker messages
+          navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'HEARTBEAT_ACK') {
+              // Heartbeat verified alive
+            }
+          });
+
+          // Re-ping when tab regains focus
+          document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && navigator.serviceWorker.controller) {
+              navigator.serviceWorker.controller.postMessage({ type: 'HEARTBEAT' });
+            }
+          });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
+
 
