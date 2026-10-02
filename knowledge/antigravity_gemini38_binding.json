@@ -1,0 +1,64 @@
+{
+  "schema_version": "3.8.0",
+  "project": "CrewAI Conversational RAG with Google Antigravity",
+  "antigravity_binding": {
+    "engine": "Google Antigravity IDE & Autonomous Agentic Framework",
+    "protocol": "Model Context Protocol (MCP) + REST + Server-Sent Events",
+    "runtime_environment": "Python 3.12 (.venv) / Windows 10/11",
+    "agentic_topology": {
+      "retriever": {
+        "role": "Knowledge Retrieval Specialist",
+        "grounding": "Direct knowledge document extraction & vector similarity",
+        "delegation": true
+      },
+      "aggregator_host": {
+        "role": "Aggregator Host Specialist",
+        "grounding": "Cross-examination, host telemetry (AggregatorHost), c-ares DNS (adig, ahost), transaction resolution",
+        "delegation": true
+      },
+      "synthesizer": {
+        "role": "Conversational Synthesizer",
+        "grounding": "Executive answer formulation, structured JSON formatting, citation attribution",
+        "delegation": true
+      }
+    }
+  },
+  "gemini_model_configuration": {
+    "primary_model": "gemini/gemini-3.8-flash",
+    "inference_engine": "Google GenAI API (Gemini 3.8 Architecture)",
+    "hyperparameters": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 40,
+      "max_output_tokens": 4096,
+      "context_window_tokens": 1048576,
+      "structured_output_mode": "application/json"
+    },
+    "safety_settings": {
+      "harassment": "BLOCK_NONE",
+      "hate_speech": "BLOCK_NONE",
+      "sexually_explicit": "BLOCK_NONE",
+      "dangerous_content": "BLOCK_NONE"
+    }
+  },
+  "adsense_transaction_resolver": {
+    "module_enabled": true,
+    "publisher_id": "pub-8501247963214589",
+    "ads_txt_endpoint": "/ads.txt",
+    "authorized_seller_record": "google.com, pub-8501247963214589, DIRECT, f08c47fec0942fa0",
+    "supported_currencies": [
+      "USD",
+      "IDR",
+      "EUR",
+      "SGD",
+      "GBP"
+    ],
+    "validation_pipeline": [
+      "Publisher ID format verification (regex: ^pub-\\d{16}$)",
+      "Authorized Digital Sellers (ads.txt) compliance audit",
+      "Net = Gross - Tax Withholding balance verification",
+      "Gemini 3.8 automated transaction audit & fraud check",
+      "Persistent ledger reconciliation"
+    ]
+  }
+}

@@ -47,6 +47,7 @@ _AGENT_METADATA = [
             "MySQL Shared Blackboard Tool",
             "XAMPP FileZilla FTP Storage Tool",
             "XAMPP Mercury Mail Tool",
+            "Google AdSense Transaction Resolver",
         ],
         "allow_delegation": True,
     },

@@ -1,0 +1,27 @@
+{
+  "spec_name": "Google AdSense Publisher & Transaction Resolution Specification",
+  "version": "2.0",
+  "publisher_metadata": {
+    "publisher_id": "pub-8501247963214589",
+    "client_id": "ca-pub-8501247963214589",
+    "certification_authority_id": "f08c47fec0942fa0",
+    "relationship_type": "DIRECT",
+    "ads_txt_line": "google.com, pub-8501247963214589, DIRECT, f08c47fec0942fa0"
+  },
+  "transaction_lifecycle": {
+    "step_1_earnings_accumulation": "Daily impressions, clicks, and RPM logged across ad units.",
+    "step_2_end_of_month_finalization": "Between the 1st and 3rd of the following month, estimated earnings are finalized.",
+    "step_3_payment_threshold": "Accounts with balance >= $100.00 (or equivalent, e.g. Rp 1,300,000 IDR) qualify for payment release.",
+    "step_4_disbursement": "Google dispatches payment between the 21st and 26th of the month via EFT / Wire Transfer.",
+    "step_5_reconciliation": "Transaction reference, payout receipt, and tax forms (W-8BEN / US Chapter 3) reconciled via Gemini 3.8."
+  },
+  "tax_withholding_rules": {
+    "us_chapter_3_default": "30% withholding on US-sourced traffic without tax treaty claim.",
+    "tax_treaty_indonesia_us": "Reduced withholding rate (typically 10% on royalties/digital services with valid NPWP/TIN and W-8BEN)."
+  },
+  "verification_checklist": [
+    "ads.txt hosted on domain root returning HTTP 200 with text/plain.",
+    "Publisher ID matches the Google AdSense account ID exactly.",
+    "Payment receipt matches bank statement wire transfer reference."
+  ]
+}

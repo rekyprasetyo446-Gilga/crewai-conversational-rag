@@ -7,6 +7,7 @@ from typing import Optional, Any, List, Union
 from crewai import Agent
 from crewai.mcp import MCPServerConfig
 from tools import (
+    AdSenseTransactionResolverTool,
     KnowledgeSearchTool,
     ListKnowledgeDocumentsTool,
     KnowledgeReadDocumentTool,
