@@ -1,4 +1,4 @@
-"""
+﻿"""
 Knowledge Base Search and Retrieval Tools for CrewAI.
 Provides semantic and keyword-based search over documents in the knowledge directory.
 """
@@ -10,7 +10,9 @@ from typing import List, Dict, Any, Type
 from pydantic import BaseModel, Field
 from crewai.tools import BaseTool
 
-KNOWLEDGE_DIR = os.getenv("KNOWLEDGE_DIR", "./knowledge")
+_BASE_DIR = Path(__file__).resolve().parent
+_raw_kb = os.getenv("KNOWLEDGE_DIR", "knowledge")
+KNOWLEDGE_DIR = str((_BASE_DIR / _raw_kb).resolve() if not Path(_raw_kb).is_absolute() else Path(_raw_kb))
 
 class SearchQueryInput(BaseModel):
     query: str = Field(..., description="The topic, question, or keywords to search for in the knowledge base.")
@@ -252,7 +254,7 @@ class JsonKnowledgeSearchTool(BaseTool):
 
         results = [f"### JSON Knowledge Search Results for: '{query}'\n"]
         for m in top_matches:
-            results.append(f"**Source**: `{m['file']}` — {m['text']}\n")
+            results.append(f"**Source**: `{m['file']}` â€” {m['text']}\n")
 
         return "\n---\n".join(results)
 
@@ -744,6 +746,7 @@ class AhostLookupTool(BaseTool):
             return f"Error: Host resolution timed out after 10s for '{host_clean}' via ahost.exe."
         except Exception as e:
             return f"Error executing ahost.exe: {str(e)}"
+
 
 
 
