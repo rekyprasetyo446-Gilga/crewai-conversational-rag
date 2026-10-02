@@ -3,6 +3,7 @@ FastAPI Server Launcher for CrewAI Conversational RAG.
 Serves the browser dashboard and modular REST API.
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -22,11 +23,19 @@ if __name__ == "__main__":
     host = settings.host
     port = settings.port
 
-    print(f"Starting {settings.app_name} v{settings.app_version}...")
-    print(f"Web Dashboard:   http://{host}:{port}/")
-    print(f"API Docs:        http://{host}:{port}/docs")
-    print(f"ReDoc Docs:      http://{host}:{port}/redoc")
+    print("=" * 60)
+    print(f" Starting {settings.app_name} v{settings.app_version}")
+    print("=" * 60)
+    print(f" Web Dashboard:   http://{host}:{port}/")
+    print(f" API Docs:        http://{host}:{port}/docs")
+    print(f" ReDoc Docs:      http://{host}:{port}/redoc")
     if host != "127.0.0.1":
-        print(f"Local Loopback:  http://127.0.0.1:{port}/")
+        print(f" Local Loopback:  http://127.0.0.1:{port}/")
+    print("=" * 60)
+    print(" Server is initializing... please wait.")
 
-    uvicorn.run("web_app:app", host=host, port=port, reload=True)
+    # Avoid reload=True on Windows desktop to prevent NamedPipe WaitNamedPipe crashes
+    # and excessive WatchFiles overhead in OneDrive directories.
+    reload_flag = os.getenv("UVICORN_RELOAD", "false").lower() in ("true", "1", "yes")
+
+    uvicorn.run(app, host=host, port=port, reload=reload_flag, log_level="info")

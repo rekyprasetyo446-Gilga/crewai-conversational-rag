@@ -190,8 +190,8 @@ class AIService:
             history_context = crew.format_history()
 
             retriever = get_retriever_agent(llm=crew.llm)
-            aggregator = get_aggregator_host_agent(llm=crew.json_llm)
-            synthesizer = get_conversational_agent(llm=crew.llm)
+            aggregator = get_aggregator_host_agent(llm=crew.json_llm, allow_delegation=True)
+            synthesizer = get_conversational_agent(llm=crew.llm, allow_delegation=True)
 
             t1 = create_retrieval_task(retriever, message, history_context)
             t2 = create_json_aggregation_task(aggregator, message, history_context)

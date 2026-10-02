@@ -3,7 +3,7 @@
     "name": "CrewAI Conversational RAG",
     "version": "2.0.0",
     "description": "An enterprise multi-agent Retrieval-Augmented Generation (RAG) and host diagnostics platform built on CrewAI. Combines structured documentation search, multi-tiered memory (MySQL & Blackboard), Windows host telemetry (AggregatorHost.exe), and high-performance asynchronous DNS/network interrogation via c-ares utilities (adig.exe and ahost.exe).",
-    "architecture": "Sequential multi-agent pipeline with Model Context Protocol (FastMCP) integration: Retriever → Aggregator Host Coordinator → Conversational Synthesizer",
+    "architecture": "Sequential multi-agent pipeline with Model Context Protocol (FastMCP) integration: Retriever \u2192 Aggregator Host Coordinator \u2192 Conversational Synthesizer",
     "runtime": "Python 3.12 (Windows x64)"
   },
   "llm_providers": [
@@ -69,7 +69,7 @@
         "MCP ADig DNS Query Tool",
         "MCP AHost Lookup Tool"
       ],
-      "allow_delegation": false,
+      "allow_delegation": true,
       "position": 2
     },
     {
@@ -341,15 +341,15 @@
     ]
   },
   "api_endpoints": {
-    "chat": "POST /api/chat — Send a message to the multi-agent pipeline",
-    "history": "GET /api/chat/history — Retrieve conversation history",
-    "clear": "POST /api/clear — Reset session memory",
-    "documents": "GET /api/documents — List knowledge base documents",
-    "upload": "POST /api/upload — Upload a new knowledge document",
-    "ai_info": "GET /api/ai/info — AI system metadata and agent roster",
-    "ai_query": "POST /api/ai/query — JSON-structured RAG query output",
-    "knowledge_index": "GET /api/ai/knowledge/index — Structured knowledge index",
-    "knowledge_search": "POST /api/ai/knowledge/search — Direct lightweight knowledge search"
+    "chat": "POST /api/chat \u2014 Send a message to the multi-agent pipeline",
+    "history": "GET /api/chat/history \u2014 Retrieve conversation history",
+    "clear": "POST /api/clear \u2014 Reset session memory",
+    "documents": "GET /api/documents \u2014 List knowledge base documents",
+    "upload": "POST /api/upload \u2014 Upload a new knowledge document",
+    "ai_info": "GET /api/ai/info \u2014 AI system metadata and agent roster",
+    "ai_query": "POST /api/ai/query \u2014 JSON-structured RAG query output",
+    "knowledge_index": "GET /api/ai/knowledge/index \u2014 Structured knowledge index",
+    "knowledge_search": "POST /api/ai/knowledge/search \u2014 Direct lightweight knowledge search"
   },
   "supported_knowledge_formats": [
     ".md",
@@ -369,7 +369,11 @@
       {
         "layer": "mysql_persistent_memory",
         "database": "crewai_memory",
-        "tables": ["conversation_history", "agent_logs", "shared_blackboard"],
+        "tables": [
+          "conversation_history",
+          "agent_logs",
+          "shared_blackboard"
+        ],
         "persistence": "Database-backed across server restarts"
       },
       {
@@ -381,17 +385,46 @@
   },
   "telecom_modulation_knowledge": {
     "source_file": "knowledge/modulasi_telekomunikasi_alkom.json",
-    "analog_modulation": ["AM (Amplitude Modulation)", "FM (NBFM / WBFM)", "SSB (USB / LSB)", "CW (Continuous Wave)"],
-    "digital_modulation": ["FSK (2-FSK / 4-FSK / GFSK)", "PSK (BPSK / QPSK / 8-PSK)", "QAM (16-QAM / 64-QAM / 256-QAM)", "OFDM"],
-    "tactical_spread_spectrum": ["FHSS (Frequency Hopping Spread Spectrum)", "DSSS (Direct Sequence Spread Spectrum)"],
-    "alkom_transceiver_presets": ["ALKOM-HF-01 (Tactical Manpack)", "ALKOM-VHF-02 (Combat Net Radio)", "ALKOM-UHF-03 (HT DMR Tier II)"]
+    "analog_modulation": [
+      "AM (Amplitude Modulation)",
+      "FM (NBFM / WBFM)",
+      "SSB (USB / LSB)",
+      "CW (Continuous Wave)"
+    ],
+    "digital_modulation": [
+      "FSK (2-FSK / 4-FSK / GFSK)",
+      "PSK (BPSK / QPSK / 8-PSK)",
+      "QAM (16-QAM / 64-QAM / 256-QAM)",
+      "OFDM"
+    ],
+    "tactical_spread_spectrum": [
+      "FHSS (Frequency Hopping Spread Spectrum)",
+      "DSSS (Direct Sequence Spread Spectrum)"
+    ],
+    "alkom_transceiver_presets": [
+      "ALKOM-HF-01 (Tactical Manpack)",
+      "ALKOM-VHF-02 (Combat Net Radio)",
+      "ALKOM-UHF-03 (HT DMR Tier II)"
+    ]
   },
   "ai_modules_modulation": {
     "source_file": "knowledge/ai_modules_configuration.json",
     "hyperparameter_presets": {
-      "deterministic_factual": {"temperature": 0.0, "top_p": 0.1, "top_k": 1},
-      "balanced_reasoning": {"temperature": 0.3, "top_p": 0.85, "top_k": 40},
-      "conversational_synthesis": {"temperature": 0.7, "top_p": 0.95, "top_k": 50}
+      "deterministic_factual": {
+        "temperature": 0.0,
+        "top_p": 0.1,
+        "top_k": 1
+      },
+      "balanced_reasoning": {
+        "temperature": 0.3,
+        "top_p": 0.85,
+        "top_k": 40
+      },
+      "conversational_synthesis": {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "top_k": 50
+      }
     },
     "rag_retrieval_modulation": {
       "chunk_size": 1000,
@@ -400,4 +433,3 @@
     }
   }
 }
-

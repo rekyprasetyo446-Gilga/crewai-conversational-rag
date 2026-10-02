@@ -163,11 +163,13 @@ class ConversationalRAGCrew:
         )
         aggregator_host = get_aggregator_host_agent(
             llm=self.llm,
-            mcps=self.agent_mcps.get("aggregator_host") if self.mcp_enabled else None
+            mcps=self.agent_mcps.get("aggregator_host") if self.mcp_enabled else None,
+            allow_delegation=True
         )
         conversationalist = get_conversational_agent(
             llm=self.llm,
-            mcps=self.agent_mcps.get("conversationalist") if self.mcp_enabled else None
+            mcps=self.agent_mcps.get("conversationalist") if self.mcp_enabled else None,
+            allow_delegation=True
         )
 
         # Create sequential tasks
@@ -219,11 +221,13 @@ class ConversationalRAGCrew:
         )
         aggregator_host = get_aggregator_host_agent(
             llm=self.llm,
-            mcps=self.agent_mcps.get("aggregator_host") if self.mcp_enabled else None
+            mcps=self.agent_mcps.get("aggregator_host") if self.mcp_enabled else None,
+            allow_delegation=True
         )
         conversationalist = get_conversational_agent(
             llm=self.llm,
-            mcps=self.agent_mcps.get("conversationalist") if self.mcp_enabled else None
+            mcps=self.agent_mcps.get("conversationalist") if self.mcp_enabled else None,
+            allow_delegation=True
         )
 
         # Create sequential tasks

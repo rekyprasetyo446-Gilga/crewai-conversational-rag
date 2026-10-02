@@ -73,7 +73,8 @@ def get_retriever_agent(
 def get_aggregator_host_agent(
     llm: Optional[Any] = None,
     mcps: Optional[List[Union[str, MCPServerConfig]]] = None,
-    include_direct_mcp_tools: bool = True
+    include_direct_mcp_tools: bool = True,
+    allow_delegation: bool = True
 ) -> Agent:
     """Creates the Aggregator Host Specialist Agent with MCP telemetry, DNS diagnostics, and shared memory tools."""
     agent_mcps = mcps if mcps is not None else get_agent_mcps("aggregator_host")
@@ -116,14 +117,15 @@ def get_aggregator_host_agent(
         mcps=agent_mcps if agent_mcps else None,
         llm=llm,
         verbose=True,
-        allow_delegation=False
+        allow_delegation=allow_delegation
     )
 
 
 def get_conversational_agent(
     llm: Optional[Any] = None,
     mcps: Optional[List[Union[str, MCPServerConfig]]] = None,
-    include_direct_mcp_tools: bool = True
+    include_direct_mcp_tools: bool = True,
+    allow_delegation: bool = True
 ) -> Agent:
     """Creates the Conversational Synthesizer & Memory Coordinator Agent with MCP tools."""
     agent_mcps = mcps if mcps is not None else get_agent_mcps("conversationalist")
@@ -149,5 +151,5 @@ def get_conversational_agent(
         mcps=agent_mcps if agent_mcps else None,
         llm=llm,
         verbose=True,
-        allow_delegation=True
+        allow_delegation=allow_delegation
     )

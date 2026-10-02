@@ -9,9 +9,50 @@ import subprocess
 from pathlib import Path
 import pymysql
 
+import sys
+import socket
+
 XAMPP_DIR = Path("C:/xampp")
-HOST_IP = "10.226.157.87"
 FASTAPI_PORT = 8000
+
+def get_host_ip() -> str:
+    """Auto-detects the host IPv4 address on LAN with reliable fallback."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        if ip and not ip.startswith("127."):
+            return ip
+    except Exception:
+        pass
+    return "10.169.99.87"
+
+HOST_IP = get_host_ip()
+
+def ensure_mysql_running():
+    """Verifies MySQL is reachable on port 3306 or launches the daemon."""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1.5)
+    result = sock.connect_ex(("127.0.0.1", 3306))
+    sock.close()
+    if result != 0:
+        print("[*] MySQL daemon not responding on port 3306. Starting mysqld...")
+        mysqld_exe = XAMPP_DIR / "mysql/bin/mysqld.exe"
+        if mysqld_exe.exists():
+            try:
+                subprocess.Popen(
+                    [str(mysqld_exe), "--defaults-file=mysql/bin/my.ini", "--standalone"],
+                    cwd=str(XAMPP_DIR),
+                    creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if sys.platform == "win32" else 0
+                )
+                import time
+                time.sleep(3)
+                print("  - Launched MySQL daemon process.")
+            except Exception as e:
+                print(f"  [!] Failed to launch mysqld: {e}")
+    else:
+        print("[*] MySQL is active and listening on port 3306.")
 
 def update_apache():
     print("[*] Updating Apache configuration...")
