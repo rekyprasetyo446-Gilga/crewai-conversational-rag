@@ -1,5 +1,5 @@
-"""
-AIService: Handles AI module features — structured JSON RAG queries,
+﻿"""
+AIService: Handles AI module features â€” structured JSON RAG queries,
 knowledge index retrieval, direct search, and system metadata.
 """
 
@@ -189,7 +189,7 @@ class AIService:
 
             history_context = crew.format_history()
 
-            retriever = get_retriever_agent(llm=crew.llm)
+            retriever = get_retriever_agent(llm=crew.llm, allow_delegation=True)
             aggregator = get_aggregator_host_agent(llm=crew.json_llm, allow_delegation=True)
             synthesizer = get_conversational_agent(llm=crew.llm, allow_delegation=True)
 
@@ -346,3 +346,4 @@ class AIService:
                     "text": text[:500],
                 })
         return excerpts
+
