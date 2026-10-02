@@ -60,3 +60,16 @@ class AdSenseLedgerResponse(BaseModel):
     total_earnings_usd: float
     total_payouts_completed: int
     transactions: List[AdSenseTransaction]
+
+
+class AdSenseBindRequest(BaseModel):
+    publisher_id: str = Field(..., description="Google AdSense Publisher ID (e.g. pub-1234567890123456)")
+    certification_authority_id: Optional[str] = Field(default="f08c47fec0942fa0", description="Certification Authority ID")
+
+
+class AdSenseBindResponse(BaseModel):
+    status: str
+    publisher_id: str
+    client_id: str
+    ads_txt_record: str
+    message: str

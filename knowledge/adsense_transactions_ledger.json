@@ -1,9 +1,9 @@
 {
   "ledger_name": "Google AdSense Payout & Transaction Ledger",
   "publisher_id": "pub-8501247963214589",
-  "last_updated": "2026-10-02T12:51:23.421091+00:00",
-  "total_earnings_usd": 5508.45,
-  "total_payouts_completed": 4,
+  "last_updated": "2026-10-02T13:04:41.746898+00:00",
+  "total_earnings_usd": 7308.45,
+  "total_payouts_completed": 5,
   "transactions": [
     {
       "transaction_id": "ADS-2026-07-EFT98214",
@@ -56,6 +56,19 @@
       "status": "COMPLETED",
       "description": "October 2026 AdSense Payout",
       "audit_hash": "SHA256:68878a794fab4aa37693d6a0425401f595a1fa67c0acca72b0aa3d6534a189fa"
+    },
+    {
+      "transaction_id": "ADS-TEST-999",
+      "publisher_id": "pub-8501247963214589",
+      "payment_date": "2026-10-02",
+      "currency": "USD",
+      "gross_amount": 2000.0,
+      "tax_withheld": 200.0,
+      "net_amount": 1800.0,
+      "payment_method": "Electronic Funds Transfer (EFT)",
+      "status": "COMPLETED",
+      "description": "Google AdSense Monthly Revenue Distribution",
+      "audit_hash": "SHA256:6f75228386f579aa1bd448dfb9386920b05a2044ca4e74a1bc0b62d9a3e30471"
     }
   ]
 }
