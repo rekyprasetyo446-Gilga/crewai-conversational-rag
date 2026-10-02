@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#060912" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CrewAI Multi-Agent Conversational RAG</title>
@@ -1318,6 +1320,15 @@
        ======================================================================== -->
   <script>
     (function initServiceWorkerAndConsoleShield() {
+      // Request persistent storage to prevent browser eviction
+      if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().then((persistent) => {
+          if (persistent) {
+            originalConsole.info('[Storage] Persistent storage granted (zero eviction).');
+          }
+        }).catch(() => {});
+      }
+
       // 1. Console Memory Shield (Clearing & Pruning Console History)
       const MAX_CONSOLE_BUFFER = 100;
       const consoleBuffer = [];
@@ -1353,7 +1364,7 @@
         try {
           console.clear();
           consoleBuffer.length = 0;
-          originalConsole.info([ConsoleShield] Periodic memory purge complete. Web application running in high-velocity mode.);
+          originalConsole.info('[ConsoleShield] Periodic memory purge complete. Web application running in high-velocity mode.');
         } catch (e) {}
       }, 5 * 60 * 1000);
 

@@ -41,3 +41,18 @@ async def service_worker_endpoint(settings: Settings = Depends(get_settings)):
             },
         )
     return Response(content="// Service Worker not found", media_type="application/javascript", status_code=404)
+
+
+@router.api_route("/manifest.json", methods=["GET", "HEAD"], summary="Serve Web App Manifest")
+async def manifest_endpoint(settings: Settings = Depends(get_settings)):
+    """Serves the W3C Web App Manifest for Chrome, Edge, and Firefox PWA auto-run."""
+    manifest_path = settings.templates_dir / "manifest.json"
+    if manifest_path.exists():
+        return Response(
+            content=manifest_path.read_text(encoding="utf-8"),
+            media_type="application/manifest+json",
+            headers={
+                "Cache-Control": "public, max-age=3600",
+            },
+        )
+    return Response(content="{}", media_type="application/manifest+json", status_code=404)
