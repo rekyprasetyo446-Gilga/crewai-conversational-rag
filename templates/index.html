@@ -10,7 +10,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CrewAI Multi-Agent Conversational RAG</title>
-  <meta name="description" content="Multi-agent RAG system powered by CrewAI â€” Retriever, Aggregator Host, and Synthesizer agents collaborating on your knowledge base." />
+  <meta name="description" content="Multi-agent RAG system powered by CrewAI — Retriever, Aggregator Host, and Synthesizer agents collaborating on your knowledge base." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -648,6 +648,58 @@
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-color: rgba(16,185,129,0.3); color: var(--success); }
     .toast.error { border-color: rgba(239,68,68,0.3); color: var(--error); }
+  
+    /* Unified Icon and Deletion Styling */
+    .icon { display: inline-block; vertical-align: -2px; flex-shrink: 0; }
+    .doc-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px; background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-color); border-radius: 8px;
+      margin-bottom: 6px; transition: all 0.2s ease; gap: 8px;
+    }
+    .doc-item:hover { background: rgba(56,189,248,0.05); border-color: var(--border-accent); }
+    .doc-info { display: flex; align-items: center; gap: 8px; overflow: hidden; flex: 1; }
+    .doc-del-btn {
+      background: transparent; border: 1px solid transparent; border-radius: 6px;
+      color: var(--text-faint); cursor: pointer; padding: 4px 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; flex-shrink: 0;
+    }
+    .doc-del-btn:hover {
+      color: #ef4444; background: rgba(239,68,68,0.12);
+      border-color: rgba(239,68,68,0.3); box-shadow: 0 0 10px rgba(239,68,68,0.25);
+    }
+    .btn-danger-ghost {
+      background: transparent; color: #f87171; border: 1px solid rgba(248,113,113,0.3);
+    }
+    .btn-danger-ghost:hover {
+      background: rgba(239,68,68,0.15); border-color: #ef4444; color: #fca5a5;
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border-color);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.08); color: var(--text-main); border-color: rgba(255,255,255,0.15);
+    }
+    .ai-preset-chip {
+      background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 20px; padding: 4px 10px; font-size: 11px; color: var(--accent-primary);
+      cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .ai-preset-chip:hover {
+      background: rgba(56,189,248,0.18); border-color: var(--accent-primary);
+      box-shadow: 0 0 12px rgba(56,189,248,0.25);
+    }
+    .confidence-meter {
+      height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08);
+      overflow: hidden; margin-top: 4px; position: relative;
+    }
+    .confidence-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, #38bdf8 0%, #10b981 100%);
+      transition: width 0.5s ease;
+    }
+
   </style>
 </head>
 <body>
@@ -664,9 +716,9 @@
       </div>
 
       <div class="sidebar-tabs">
-        <div class="sidebar-tab active" id="stab-docs" onclick="switchSideTab('docs')">ðŸ“„ Docs</div>
-        <div class="sidebar-tab" id="stab-agents" onclick="switchSideTab('agents')">ðŸ¤– Agents</div>
-        <div class="sidebar-tab" id="stab-pipeline" onclick="switchSideTab('pipeline')">âš¡ Flow</div>
+        <div class="sidebar-tab active" id="stab-docs" onclick="switchSideTab('docs')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg> Docs</div>
+        <div class="sidebar-tab" id="stab-agents" onclick="switchSideTab('agents')"><img src="/icons/icon.svg" style="width:18px;height:18px;" /> Agents</div>
+        <div class="sidebar-tab" id="stab-pipeline" onclick="switchSideTab('pipeline')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Flow</div>
       </div>
 
       <!-- Documents panel -->
@@ -682,7 +734,7 @@
           <div class="upload-box" onclick="document.getElementById('fileInput').click()">
             <span style="font-size:22px">ðŸ“</span>
             <p><strong>Click to upload</strong></p>
-            <p>.md Â· .txt Â· .json Â· .csv</p>
+            <p>.md · .txt · .json · .csv</p>
           </div>
           <input type="file" id="fileInput" style="display:none" onchange="handleFileUpload(this.files)" />
         </div>
@@ -695,7 +747,7 @@
             <div class="agent-avatar" style="background:rgba(56,189,248,0.15)">ðŸ”</div>
             <div>
               <div class="agent-info-name">Retrieval Specialist</div>
-              <div class="agent-info-role">Step 1 Â· Retriever</div>
+              <div class="agent-info-role">Step 1 · Retriever</div>
             </div>
             <div class="agent-status-dot" style="color:var(--agent-1);background:var(--agent-1)"></div>
           </div>
@@ -712,7 +764,7 @@
             <div class="agent-avatar" style="background:rgba(167,139,250,0.15)">ðŸ§©</div>
             <div>
               <div class="agent-info-name">Aggregator Host</div>
-              <div class="agent-info-role">Step 2 Â· Aggregator</div>
+              <div class="agent-info-role">Step 2 · Aggregator</div>
             </div>
             <div class="agent-status-dot" style="color:var(--agent-2);background:var(--agent-2)"></div>
           </div>
@@ -729,10 +781,10 @@
 
         <div class="agent-card">
           <div class="agent-card-header">
-            <div class="agent-avatar" style="background:rgba(52,211,153,0.15)">ðŸ’¬</div>
+            <div class="agent-avatar" style="background:rgba(52,211,153,0.15)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
             <div>
               <div class="agent-info-name">Synthesizer</div>
-              <div class="agent-info-role">Step 3 Â· Conversational</div>
+              <div class="agent-info-role">Step 3 · Conversational</div>
             </div>
             <div class="agent-status-dot" style="color:var(--agent-3);background:var(--agent-3)"></div>
           </div>
@@ -785,16 +837,28 @@
     <!-- â”€â”€ Main Area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="main-area">
       <div class="main-tabs">
-        <div class="main-tab active" id="mtab-chat" onclick="switchMainTab('chat')">ðŸ’¬ Chat</div>
-        <div class="main-tab" id="mtab-agents" onclick="switchMainTab('agents')">ðŸ¤– Agents</div>
-        <div class="main-tab" id="mtab-ai" onclick="switchMainTab('ai')">âš¡ AI Module</div>
+        <div class="main-tab active" id="mtab-chat" onclick="switchMainTab('chat')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Chat</div>
+        <div class="main-tab" id="mtab-agents" onclick="switchMainTab('agents')"><img src="/icons/icon.svg" style="width:18px;height:18px;" /> Agents</div>
+        <div class="main-tab" id="mtab-ai" onclick="switchMainTab('ai')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> AI Module</div>
 
         <div class="main-tab-actions">
+          <button class="btn btn-ghost" onclick="window.clearAppConsoleHistory()" title="Clear browser console history & free RAM">
+            <svg class="icon icon-console" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+            <span>Clear Console</span>
+          </button>
+
           <div class="status-pill" id="statusPill">
             <div class="pulse-dot"></div>
             <span id="statusText">Loading...</span>
           </div>
-          <button class="btn" onclick="clearMemory()">ðŸ§¹ Clear</button>
+          <button class="btn btn-danger-ghost" onclick="clearMemory()" title="Reset session conversation memory">
+            <svg class="icon icon-del" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+            </svg>
+            <span>Reset Memory</span>
+          </button>
           <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center" id="memoryCount">0 turns</span>
         </div>
       </div>
@@ -803,19 +867,19 @@
       <div class="main-panel active" id="mpanel-chat">
         <div class="messages-container" id="messagesContainer">
           <div class="message-row agent">
-            <div class="avatar agent">ðŸ¤–</div>
+            <div class="avatar agent"><img src="/icons/icon.svg" style="width:18px;height:18px;" /></div>
             <div>
               <div class="message-bubble">
                 <h3 style="margin-bottom:8px">Welcome to CrewAI Multi-Agent RAG!</h3>
                 <p>I operate with a collaborative <strong>3-agent pipeline</strong>:</p>
                 <ul style="margin-top:8px;margin-bottom:8px">
-                  <li><strong style="color:var(--agent-1)">ðŸ” Retrieval Specialist</strong> â€” Searches docs, extracts evidence</li>
-                  <li><strong style="color:var(--agent-2)">ðŸ§© Aggregator Host</strong> â€” Cross-references facts, resolves conflicts</li>
-                  <li><strong style="color:var(--agent-3)">ðŸ’¬ Synthesizer</strong> â€” Delivers cited, conversational answers</li>
+                  <li><strong style="color:var(--agent-1)">ðŸ” Retrieval Specialist</strong> — Searches docs, extracts evidence</li>
+                  <li><strong style="color:var(--agent-2)">ðŸ§© Aggregator Host</strong> — Cross-references facts, resolves conflicts</li>
+                  <li><strong style="color:var(--agent-3)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Synthesizer</strong> — Delivers cited, conversational answers</li>
                 </ul>
                 <p>Switch to the <strong>Agents</strong> tab to explore the pipeline, or ask me anything below!</p>
               </div>
-              <div class="msg-meta">CrewAI Â· Just now</div>
+              <div class="msg-meta">CrewAI · Just now</div>
             </div>
           </div>
         </div>
@@ -841,7 +905,7 @@
             </div>
           </div>
           <div style="font-size:11px;color:var(--text-faint);margin-top:8px;padding:0 2px">
-            Mode: <span id="modeLabel" style="color:var(--accent-primary)">Standard Pipeline</span> Â· All responses grounded in indexed knowledge
+            Mode: <span id="modeLabel" style="color:var(--accent-primary)">Standard Pipeline</span> · All responses grounded in indexed knowledge
           </div>
         </footer>
       </div>
@@ -850,7 +914,7 @@
       <div class="main-panel" id="mpanel-agents">
         <div class="agents-panel-inner">
           <div class="agents-hero">
-            <h2>ðŸ¤– Multi-Agent Pipeline</h2>
+            <h2><img src="/icons/icon.svg" style="width:18px;height:18px;" /> Multi-Agent Pipeline</h2>
             <p>Three specialized agents collaborate sequentially to deliver accurate, cited answers from your knowledge base. Each agent has a defined role, toolset, and strict output contract.</p>
           </div>
 
@@ -862,21 +926,21 @@
                 <div class="pipeline-node-label" style="color:var(--agent-1)">Retrieval</div>
                 <div class="pipeline-node-sub">Search + Extract</div>
               </div>
-              <div class="pipeline-arrow">â†’</div>
+              <div class="pipeline-arrow">→</div>
               <div class="pipeline-node">
                 <div class="pipeline-node-icon" style="background:rgba(167,139,250,0.15)">ðŸ§©</div>
                 <div class="pipeline-node-label" style="color:var(--agent-2)">Aggregation</div>
                 <div class="pipeline-node-sub">Validate + Deduplicate</div>
               </div>
-              <div class="pipeline-arrow">â†’</div>
+              <div class="pipeline-arrow">→</div>
               <div class="pipeline-node">
-                <div class="pipeline-node-icon" style="background:rgba(52,211,153,0.15)">ðŸ’¬</div>
+                <div class="pipeline-node-icon" style="background:rgba(52,211,153,0.15)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
                 <div class="pipeline-node-label" style="color:var(--agent-3)">Synthesis</div>
                 <div class="pipeline-node-sub">Generate + Cite</div>
               </div>
-              <div class="pipeline-arrow">â†’</div>
+              <div class="pipeline-arrow">→</div>
               <div class="pipeline-node">
-                <div class="pipeline-node-icon" style="background:rgba(255,255,255,0.06)">ðŸ‘¤</div>
+                <div class="pipeline-node-icon" style="background:rgba(255,255,255,0.06)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg></div>
                 <div class="pipeline-node-label">User</div>
                 <div class="pipeline-node-sub">Final Response</div>
               </div>
@@ -892,12 +956,12 @@
                   <div class="afc-icon a1">ðŸ”</div>
                   <div>
                     <div class="afc-name">Knowledge Retrieval Specialist</div>
-                    <div class="afc-role">Information Extraction Â· Grounded Search</div>
+                    <div class="afc-role">Information Extraction · Grounded Search</div>
                   </div>
                   <div class="afc-step">Step 1</div>
                 </div>
                 <div class="afc-desc">
-                  Searches and retrieves accurate facts and excerpts from all knowledge base documents. Strictly grounded â€” never fabricates. Returns exact document names and section quotes.
+                  Searches and retrieves accurate facts and excerpts from all knowledge base documents. Strictly grounded — never fabricates. Returns exact document names and section quotes.
                 </div>
                 <div class="afc-tools-title">Tools</div>
                 <div class="afc-tools">
@@ -925,7 +989,7 @@
                   <div class="afc-icon a2">ðŸ§©</div>
                   <div>
                     <div class="afc-name">Aggregator Host Specialist</div>
-                    <div class="afc-role">Cross-Reference Â· Host & Network Diagnostics</div>
+                    <div class="afc-role">Cross-Reference · Host & Network Diagnostics</div>
                   </div>
                   <div class="afc-step">Step 2</div>
                 </div>
@@ -936,8 +1000,8 @@
                 <div class="afc-tools">
                   <div class="afc-tool">ðŸ”Ž KB Search</div>
                   <div class="afc-tool">ðŸ“– Read Doc</div>
-                  <div class="afc-tool">ðŸ–¥ï¸ Host Inspector</div>
-                  <div class="afc-tool">âš¡ ADig DNS</div>
+                  <div class="afc-tool"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Host Inspector</div>
+                  <div class="afc-tool"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> ADig DNS</div>
                   <div class="afc-tool">ðŸŒ AHost Lookup</div>
                 </div>
                 <div class="afc-divider"></div>
@@ -956,10 +1020,10 @@
               <!-- Agent 3 -->
               <div class="agent-full-card a3">
                 <div class="afc-header">
-                  <div class="afc-icon a3">ðŸ’¬</div>
+                  <div class="afc-icon a3"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
                   <div>
                     <div class="afc-name">Conversational Synthesizer</div>
-                    <div class="afc-role">Response Generation Â· Memory</div>
+                    <div class="afc-role">Response Generation · Memory</div>
                   </div>
                   <div class="afc-step">Step 3</div>
                 </div>
@@ -993,23 +1057,23 @@
             <div class="info-grid" id="aiInfoGrid">
               <div class="info-card">
                 <div class="info-card-label">Active Model</div>
-                <div class="info-card-value" style="font-size:14px" id="infoModel">â€”</div>
+                <div class="info-card-value" style="font-size:14px" id="infoModel">—</div>
               </div>
               <div class="info-card">
                 <div class="info-card-label">API Configured</div>
-                <div class="info-card-value" id="infoConfigured">â€”</div>
+                <div class="info-card-value" id="infoConfigured">—</div>
               </div>
               <div class="info-card">
                 <div class="info-card-label">Pipeline</div>
-                <div class="info-card-value" id="infoPipeline">â€”</div>
+                <div class="info-card-value" id="infoPipeline">—</div>
               </div>
               <div class="info-card">
                 <div class="info-card-label">Agents</div>
-                <div class="info-card-value" id="infoAgents">â€”</div>
+                <div class="info-card-value" id="infoAgents">—</div>
               </div>
               <div class="info-card">
                 <div class="info-card-label">Tools</div>
-                <div class="info-card-value" id="infoTools">â€”</div>
+                <div class="info-card-value" id="infoTools">—</div>
               </div>
             </div>
           </div>
@@ -1017,36 +1081,155 @@
       </div>
 
       <!-- â”€â”€ AI Module Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <!-- ── Comprehensive 4-in-1 AI Module Suite ──────────────────── -->
       <div class="main-panel" id="mpanel-ai">
-        <div class="ai-panel-inner">
-          <div class="agents-hero">
-            <h2>âš¡ AI Module</h2>
-            <p>Lightweight endpoints for direct knowledge search, structured JSON RAG, and the knowledge index â€” all without spinning up the full agent pipeline.</p>
+        <div class="ai-panel-inner" style="max-width:1100px;margin:0 auto;padding-bottom:40px;">
+          <div class="agents-hero" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+            <div>
+              <h2 style="display:flex;align-items:center;gap:10px;margin:0;font-size:22px;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Autonomous AI Module Suite
+              </h2>
+              <p style="margin:4px 0 0 0;font-size:13px;color:var(--text-muted)">
+                Unified AI engine: Direct Knowledge Retrieval, Structured JSON RAG, Multi-Agent Topology, and Deep Index Mapping.
+              </p>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost" onclick="loadAIInfo()" title="Refresh AI System Metadata">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Sync Topology
+              </button>
+            </div>
           </div>
 
-          <!-- Direct Search -->
-          <div>
-            <div class="section-title">Direct Knowledge Search <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;font-size:11px">POST /api/ai/knowledge/search</span></div>
-            <div class="search-row" style="margin-bottom:10px">
-              <input type="text" id="searchInput" class="search-input" placeholder="Search knowledge base..." onkeydown="if(event.key==='Enter') runSearch()" />
-              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer">
+          <!-- Section 1: AI System Architecture & Agent Topology -->
+          <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:18px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+              <div class="section-title" style="margin:0;display:flex;align-items:center;gap:6px;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="19" cy="11" r="3"/><circle cx="5" cy="11" r="3"/></svg>
+                Module 1: Multi-Agent System & Topology
+              </div>
+              <div style="display:flex;gap:6px;font-size:11px;" id="aiMetaBadges">
+                <span class="status-pill" style="border-color:rgba(56,189,248,0.3);color:var(--accent-primary)">Model: <span id="aiActiveModel">Loading...</span></span>
+                <span class="status-pill" style="border-color:rgba(16,185,129,0.3);color:#10b981">Pipeline: Sequential</span>
+                <span class="status-pill" style="border-color:rgba(192,132,252,0.3);color:#c084fc">Delegation: Enabled</span>
+              </div>
+            </div>
+
+            <div id="aiAgentsGrid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:12px;">
+              <div style="color:var(--text-muted);font-size:12px;">Loading Agent metadata...</div>
+            </div>
+          </div>
+
+          <!-- Section 2: Interactive Structured JSON RAG Engine -->
+          <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:18px;margin-bottom:20px;">
+            <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <span style="display:flex;align-items:center;gap:6px;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Module 2: Structured JSON RAG Engine
+              </span>
+              <span style="font-size:11px;color:var(--text-faint)">POST /api/ai/query</span>
+            </div>
+
+            <!-- Quick Preset Chips -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <span style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;">Presets:</span>
+              <button class="ai-preset-chip" onclick="setAiQueryPreset('Jelaskan jenis modulasi analog dan digital pada alkom telekomunikasi.')">
+                📡 Modulasi Alkom
+              </button>
+              <button class="ai-preset-chip" onclick="setAiQueryPreset('Inspect local host diagnostics and Windows AggregatorHost status.')">
+                🖥️ Host Diagnostics
+              </button>
+              <button class="ai-preset-chip" onclick="setAiQueryPreset('Summarize the multi-agent RAG pipeline and tool capabilities.')">
+                🧩 System Architecture
+              </button>
+            </div>
+
+            <div class="search-row" style="margin-bottom:12px;display:flex;gap:8px;">
+              <input type="text" id="aiQueryInput" class="search-input" placeholder="Ask a structured RAG query across knowledge base..." onkeydown="if(event.key==='Enter') runStructuredQuery()" style="flex:1;" />
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;">
+                <input type="checkbox" id="aiUseJsonMode" checked /> JSON Mode
+              </label>
+              <button class="btn btn-primary" id="aiQueryBtn" onclick="runStructuredQuery()">
+                <span id="aiQueryBtnText">Run RAG</span>
+              </button>
+            </div>
+
+            <!-- Query Output Area -->
+            <div id="aiQueryResultBox" style="display:none;background:rgba(0,0,0,0.25);border:1px solid var(--border-color);border-radius:10px;padding:14px;margin-top:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <div style="font-size:13px;font-weight:600;color:var(--accent-primary);">Summary Response</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:11px;color:var(--text-muted);">Confidence:</span>
+                  <span id="aiConfidenceValue" style="font-size:12px;font-weight:700;color:#10b981;">0%</span>
+                </div>
+              </div>
+              <div class="confidence-meter" style="margin-bottom:14px;">
+                <div class="confidence-fill" id="aiConfidenceBar" style="width:0%;"></div>
+              </div>
+              
+              <div id="aiSummaryText" style="font-size:13px;line-height:1.6;color:var(--text-main);margin-bottom:14px;"></div>
+
+              <div id="aiFactsContainer" style="margin-bottom:14px;display:none;">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Verified Aggregated Facts:</div>
+                <ul id="aiFactsList" style="margin:0;padding-left:18px;font-size:12px;color:var(--text-muted);line-height:1.7;"></ul>
+              </div>
+
+              <div id="aiConflictsBox" style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#fca5a5;"></div>
+
+              <div id="aiSourcesContainer" style="margin-bottom:10px;display:none;">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Cited Sources:</div>
+                <div id="aiSourcesList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+              </div>
+
+              <!-- Collapsible Raw JSON Viewer -->
+              <details style="margin-top:10px;">
+                <summary style="font-size:11px;color:var(--text-faint);cursor:pointer;">View Raw Structured JSON</summary>
+                <pre class="json-block" id="aiRawJsonBox" style="margin-top:6px;max-height:220px;overflow:auto;font-size:11px;"></pre>
+              </details>
+            </div>
+          </div>
+
+          <!-- Section 3: Lightweight Direct Knowledge Search -->
+          <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:18px;margin-bottom:20px;">
+            <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <span style="display:flex;align-items:center;gap:6px;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Module 3: Direct Knowledge Search
+              </span>
+              <span style="font-size:11px;color:var(--text-faint)">POST /api/ai/knowledge/search</span>
+            </div>
+
+            <div class="search-row" style="margin-bottom:12px;display:flex;gap:8px;">
+              <input type="text" id="searchInput" class="search-input" placeholder="Search facts, modulation, DNS, or policies..." onkeydown="if(event.key==='Enter') runSearch()" style="flex:1;" />
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap;">
                 <input type="checkbox" id="jsonOnly" /> JSON only
               </label>
               <button class="btn btn-primary" onclick="runSearch()">Search</button>
             </div>
-            <div class="search-results" id="searchResults" style="font-size:12px;line-height:1.7">
+            <div class="search-results" id="searchResults" style="font-size:12px;line-height:1.7;max-height:260px;overflow:auto;">
               Results will appear here...
             </div>
           </div>
 
-          <!-- Knowledge Index -->
-          <div>
-            <div class="section-title" style="margin-bottom:10px">Knowledge Index <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;font-size:11px">GET /api/ai/knowledge/index</span></div>
-            <button class="btn" onclick="loadIndex()" style="margin-bottom:10px">Load Index</button>
-            <div class="json-block" id="indexBlock">Click "Load Index" to view the structured knowledge map.</div>
+          <!-- Section 4: Structured Knowledge Index Explorer -->
+          <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:18px;">
+            <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <span style="display:flex;align-items:center;gap:6px;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Module 4: Structured Knowledge Index Map
+              </span>
+              <button class="btn btn-ghost" onclick="loadIndex()" style="padding:4px 10px;font-size:11px;">
+                Refresh Index
+              </button>
+            </div>
+            <div id="indexCategoriesList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+            <div class="json-block" id="indexBlock" style="max-height:300px;overflow:auto;font-size:11px;">Click "Refresh Index" to view the structured knowledge map.</div>
           </div>
+
         </div>
       </div>
+
     </div>
   </div>
 
@@ -1065,6 +1248,7 @@
     }
 
     function switchMainTab(tab) {
+      if (tab === 'ai') { loadAIInfo(); loadIndex(); }
       document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('mtab-' + tab).classList.add('active');
@@ -1103,8 +1287,15 @@
           const div = document.createElement('div');
           div.className = 'doc-item';
           div.innerHTML = `
-            <span class="doc-name" title="${doc.name}">${doc.name}</span>
-            <span class="doc-badge ${['json','csv'].includes(ext) ? 'json' : 'md'}">${ext.toUpperCase()}</span>
+            <div class="doc-info" onclick="previewDoc('${doc.name}')" style="cursor:pointer">
+              <span class="doc-badge ${['json','csv'].includes(ext) ? 'json' : 'md'}">${ext.toUpperCase()}</span>
+              <span class="doc-name" title="${doc.name}">${doc.name}</span>
+            </div>
+            <button class="doc-del-btn" title="Delete ${doc.name}" onclick="event.stopPropagation(); deleteDocument('${doc.name}')">
+              <svg class="icon icon-del" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+              </svg>
+            </button>
           `;
           dl.appendChild(div);
         });
@@ -1135,14 +1326,14 @@
       try {
         const res = await fetch('/api/ai/info');
         const d = await res.json();
-        document.getElementById('infoModel').textContent = d.active_model || 'â€”';
-        document.getElementById('infoConfigured').textContent = d.model_configured ? 'âœ… Yes' : 'âŒ No';
-        document.getElementById('infoPipeline').textContent = d.pipeline || 'â€”';
-        document.getElementById('infoAgents').textContent = d.agents?.length ?? 'â€”';
-        document.getElementById('infoTools').textContent = d.tools?.length ?? 'â€”';
-        document.getElementById('aiInfoStatus').textContent = 'âœ“ live';
+        document.getElementById('infoModel').textContent = d.active_model || '—';
+        document.getElementById('infoConfigured').textContent = d.model_configured ? '✓ Yes' : 'âŒ No';
+        document.getElementById('infoPipeline').textContent = d.pipeline || '—';
+        document.getElementById('infoAgents').textContent = d.agents?.length ?? '—';
+        document.getElementById('infoTools').textContent = d.tools?.length ?? '—';
+        document.getElementById('aiInfoStatus').textContent = '✓ live';
       } catch(e) {
-        document.getElementById('aiInfoStatus').textContent = 'âš  error';
+        document.getElementById('aiInfoStatus').textContent = '⚠ error';
       }
     }
 
@@ -1183,7 +1374,7 @@
         if (res.ok) {
           if (chatMode === 'json') {
             const summary = data.summary || data.raw_output || JSON.stringify(data, null, 2);
-            const sources = data.sources?.map(s => `*Source: ${s.document}*`).join(' Â· ') || '';
+            const sources = data.sources?.map(s => `*Source: ${s.document}*`).join(' · ') || '';
             appendMessage('agent', summary + (sources ? '\n\n' + sources : ''));
             if (data.turns !== undefined) memoryCount.textContent = data.turns + ' turns';
           } else {
@@ -1195,7 +1386,7 @@
         }
       } catch(err) {
         removeThinking(thinkingId);
-        appendMessage('agent', 'âŒ Network error â€” could not reach server.');
+        appendMessage('agent', 'âŒ Network error — could not reach server.');
       } finally {
         sendBtn.disabled = false;
         chatInput.focus();
@@ -1211,10 +1402,10 @@
       bubble.innerHTML = role === 'agent' ? marked.parse(text) : escapeHtml(text);
       const meta = document.createElement('div');
       meta.className = 'msg-meta';
-      meta.textContent = role === 'agent' ? `CrewAI Â· ${now}` : `You Â· ${now}`;
+      meta.textContent = role === 'agent' ? `CrewAI · ${now}` : `You · ${now}`;
       const avatar = document.createElement('div');
       avatar.className = `avatar ${role}`;
-      avatar.textContent = role === 'agent' ? 'ðŸ¤–' : 'ðŸ‘¤';
+      avatar.innerHTML = role === 'agent' ? '<img src="/icons/icon.svg" style="width:20px;height:20px;display:block;margin:auto;" />' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display:block;margin:auto;"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>';
       const inner = document.createElement('div');
       inner.appendChild(bubble);
       inner.appendChild(meta);
@@ -1229,7 +1420,7 @@
       const row = document.createElement('div');
       row.id = id; row.className = 'message-row agent';
       row.innerHTML = `
-        <div class="avatar agent">ðŸ¤–</div>
+        <div class="avatar agent"><img src="/icons/icon.svg" style="width:18px;height:18px;" /></div>
         <div class="message-bubble agent-thinking">
           <div class="thinking-dots"><span></span><span></span><span></span></div>
           <span>Agents collaborating...</span>
@@ -1248,7 +1439,7 @@
     async function clearMemory() {
       await fetch('/api/clear', { method: 'POST' });
       memoryCount.textContent = '0 turns';
-      appendMessage('agent', 'ðŸ§¹ Memory cleared â€” starting fresh!');
+      appendMessage('agent', ' Memory cleared — starting fresh!');
     }
 
     function askSuggestion(text) { chatInput.value = text; sendMessage(text); }
@@ -1268,7 +1459,7 @@
         if (res.ok) {
           loadDocuments();
           showToast(`Indexed: ${data.filename} (${data.size_kb} KB)`);
-          appendMessage('agent', `ðŸ“„ New document indexed: \`${data.filename}\` (${data.size_kb} KB)`);
+          appendMessage('agent', `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg> New document indexed: \`${data.filename}\` (${data.size_kb} KB)`);
         } else {
           showToast(data.detail || 'Upload failed', 'error');
         }
@@ -1305,12 +1496,22 @@
 
     async function loadIndex() {
       const box = document.getElementById('indexBlock');
-      box.textContent = 'Loading...';
+      const catList = document.getElementById('indexCategoriesList');
+      if (box) box.textContent = 'Loading structured knowledge index...';
       try {
         const res = await fetch('/api/ai/knowledge/index');
         const data = await res.json();
-        box.textContent = JSON.stringify(data, null, 2);
-      } catch(e) { box.textContent = 'Failed to load index.'; }
+        if (catList && data.categories) {
+          catList.innerHTML = data.categories.map(c => `
+            <span class="status-pill" style="font-size:11px;border-color:rgba(56,189,248,0.3);color:var(--accent-primary)">
+              ${c}
+            </span>
+          `).join('');
+        }
+        if (box) box.textContent = JSON.stringify(data, null, 2);
+      } catch(e) {
+        if (box) box.textContent = 'Failed to load index: ' + e.message;
+      }
     }
 
     // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
