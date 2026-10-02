@@ -27,6 +27,7 @@ _AGENT_METADATA = [
             "Strictly grounded in indexed documentation with integrated AHost DNS verification."
         ),
         "tools": ["Knowledge Base Search", "List Knowledge Documents", "Read Complete Document", "AHost Lookup Tool"],
+        "allow_delegation": True,
     },
     {
         "name": "Aggregator Host Specialist",
@@ -47,6 +48,7 @@ _AGENT_METADATA = [
             "XAMPP FileZilla FTP Storage Tool",
             "XAMPP Mercury Mail Tool",
         ],
+        "allow_delegation": True,
     },
     {
         "name": "Conversational Synthesizer",
@@ -56,6 +58,7 @@ _AGENT_METADATA = [
             "and well-cited conversational responses for the user."
         ),
         "tools": ["XAMPP Mercury Mail Tool"],
+        "allow_delegation": True,
     },
 ]
 
@@ -346,4 +349,5 @@ class AIService:
                     "text": text[:500],
                 })
         return excerpts
+
 
