@@ -4,6 +4,7 @@ UI Router: Serves the web dashboard user interface and Service Worker.
 
 from pathlib import Path
 from fastapi import APIRouter, Depends, Response
+from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
 
 from api.config import Settings
@@ -56,3 +57,33 @@ async def manifest_endpoint(settings: Settings = Depends(get_settings)):
             },
         )
     return Response(content="{}", media_type="application/manifest+json", status_code=404)
+
+
+@router.api_route("/favicon.ico", methods=["GET", "HEAD"], summary="Serve Favicon")
+async def favicon_endpoint(settings: Settings = Depends(get_settings)):
+    ico_path = settings.templates_dir / "icons" / "favicon.ico"
+    if ico_path.exists():
+        return FileResponse(ico_path, media_type="image/x-icon", headers={"Cache-Control": "public, max-age=86400"})
+    return Response(status_code=404)
+
+
+@router.api_route("/icons/{filename}", methods=["GET", "HEAD"], summary="Serve Icon Assets")
+async def icons_endpoint(filename: str, settings: Settings = Depends(get_settings)):
+    icons_dir = (settings.templates_dir / "icons").resolve()
+    icon_path = (icons_dir / filename).resolve()
+    if not str(icon_path).startswith(str(icons_dir)):
+        return Response(status_code=403)
+    if icon_path.exists() and icon_path.is_file():
+        media_types = {
+            ".png": "image/png",
+            ".svg": "image/svg+xml",
+            ".ico": "image/x-icon",
+            ".webp": "image/webp",
+        }
+        media_type = media_types.get(icon_path.suffix.lower(), "application/octet-stream")
+        return FileResponse(
+            icon_path,
+            media_type=media_type,
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
+    return Response(status_code=404)

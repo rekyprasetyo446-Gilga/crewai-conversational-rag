@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="crewGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Shield with rounded squircle -->
+  <rect x="24" y="24" width="464" height="464" rx="116" fill="url(#bgGlow)" stroke="url(#borderGrad)" stroke-width="6"/>
+
+  <!-- Subtle Inner Orbit Grid -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#38bdf8" stroke-opacity="0.12" stroke-width="2" stroke-dasharray="8 8"/>
+  <circle cx="256" cy="256" r="110" fill="none" stroke="#818cf8" stroke-opacity="0.15" stroke-width="2"/>
+
+  <!-- Multi-Agent Interconnecting Synaptic Constellation -->
+  <line x1="256" y1="120" x2="140" y2="330" stroke="url(#crewGrad)" stroke-width="5" stroke-opacity="0.6"/>
+  <line x1="256" y1="120" x2="372" y2="330" stroke="url(#crewGrad)" stroke-width="5" stroke-opacity="0.6"/>
+  <line x1="140" y1="330" x2="372" y2="330" stroke="url(#crewGrad)" stroke-width="5" stroke-opacity="0.6"/>
+  
+  <line x1="256" y1="256" x2="256" y2="120" stroke="#38bdf8" stroke-width="3" stroke-opacity="0.8"/>
+  <line x1="256" y1="256" x2="140" y2="330" stroke="#818cf8" stroke-width="3" stroke-opacity="0.8"/>
+  <line x1="256" y1="256" x2="372" y2="330" stroke="#c084fc" stroke-width="3" stroke-opacity="0.8"/>
+
+  <!-- Central Multi-Agent Core Shield / Stylized C & Nexus -->
+  <circle cx="256" cy="256" r="48" fill="#0f172a" stroke="url(#crewGrad)" stroke-width="6" filter="url(#glow)"/>
+  
+  <!-- Stylized CrewAI 'C' in Center Core -->
+  <path d="M 276 226 C 240 220 224 238 224 256 C 224 274 240 292 276 286" 
+        fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="276" cy="226" r="5" fill="#38bdf8"/>
+  <circle cx="276" cy="286" r="5" fill="#c084fc"/>
+
+  <!-- Agent 1 Node: Retriever (Top Cyan) -->
+  <circle cx="256" cy="120" r="22" fill="#0b1120" stroke="#38bdf8" stroke-width="6" filter="url(#glow)"/>
+  <circle cx="256" cy="120" r="10" fill="#38bdf8"/>
+
+  <!-- Agent 2 Node: Aggregator Host (Bottom Left Violet) -->
+  <circle cx="140" cy="330" r="22" fill="#0b1120" stroke="#818cf8" stroke-width="6" filter="url(#glow)"/>
+  <circle cx="140" cy="330" r="10" fill="#818cf8"/>
+
+  <!-- Agent 3 Node: Synthesizer Specialist (Bottom Right Purple/Coral) -->
+  <circle cx="372" cy="330" r="22" fill="#0b1120" stroke="#c084fc" stroke-width="6" filter="url(#glow)"/>
+  <circle cx="372" cy="330" r="10" fill="#c084fc"/>
+
+  <!-- Orbiting Knowledge Sparks -->
+  <circle cx="198" cy="188" r="4" fill="#38bdf8" opacity="0.9"/>
+  <circle cx="314" cy="188" r="4" fill="#c084fc" opacity="0.9"/>
+  <circle cx="256" cy="330" r="5" fill="#818cf8" opacity="0.9"/>
+</svg>

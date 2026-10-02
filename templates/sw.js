@@ -15,6 +15,11 @@ const RUNTIME_CACHE = 'crewai-rag-runtime-v1.0';
 // Critical core assets to pre-cache
 const PRECACHE_ASSETS = [
     '/',
+    '/manifest.json',
+    '/favicon.ico',
+    '/icons/icon.svg',
+    '/icons/icon-192.png',
+    '/icons/icon-512.png',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
     'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
 ];
