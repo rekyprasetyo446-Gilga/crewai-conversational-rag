@@ -2,7 +2,7 @@
 .SYNOPSIS
     Persistent Launcher for CrewAI Conversational RAG Dashboard
 #>
-$ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProjectRoot = if ($MyInvocation.MyCommand.Path) { Split-Path -Parent $MyInvocation.MyCommand.Path } else { "C:\Users\rekyp\OneDrive\Desktop\crewai_conversational_rag" }
 Set-Location $ProjectRoot
 
 $python = "$ProjectRoot\.venv\Scripts\python.exe"
@@ -24,6 +24,7 @@ Write-Host "   Starting CrewAI Conversational RAG Server & UI        " -Foregrou
 Write-Host "   Web UI : http://localhost:8000                        " -ForegroundColor Green
 Write-Host "   Docs   : http://localhost:8000/docs                   " -ForegroundColor Green
 Write-Host "   Mode   : Always Active (Auto-Recovery Enabled)        " -ForegroundColor Yellow
+Write-Host "   Agents : Full Delegation Enabled (All 3 Agents)       " -ForegroundColor Magenta
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 # Background Poller: Wait for port 8000 to be ready, then open browser
