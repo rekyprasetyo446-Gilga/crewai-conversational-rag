@@ -621,17 +621,19 @@ function initLedger() {
 
 function generateLedgerData() {
   const units = ['Header Banner', 'Sidebar Right', 'In-Article', 'Footer Ad', 'Mobile Anchor', 'Sticky Rail'];
+  const sources = ['Google Search', 'Direct App Traffic', 'Social Referral', 'Web Crawlers', 'Push Notifications'];
   const data = [];
   for (let d = 1; d <= 30; d++) {
     const date = `2026-10-${String(d).padStart(2,'0')}`;
     const unit = units[Math.floor(Math.random() * units.length)];
+    const source = sources[Math.floor(Math.random() * sources.length)];
     const impressions = Math.floor(Math.random() * 18000 + 5000);
     const clicks      = Math.floor(impressions * (Math.random() * 0.015 + 0.005));
     const ctr         = (clicks / impressions * 100).toFixed(2);
     const rpm         = (Math.random() * 4 + 1.5).toFixed(2);
     const earnings    = (impressions / 1000 * parseFloat(rpm)).toFixed(2);
     const status      = d <= 25 ? 'finalized' : 'estimated';
-    data.push({ date, unit, impressions, clicks, ctr, rpm, earnings, status });
+    data.push({ date, unit, source, impressions, clicks, ctr, rpm, earnings, status });
   }
   return data.sort((a, b) => b.date.localeCompare(a.date));
 }
@@ -649,6 +651,7 @@ function renderLedger() {
     tr.innerHTML = `
       <td>${row.date}</td>
       <td>${row.unit}</td>
+      <td><span style="opacity:0.8; font-size:12px; font-weight: 500;">${row.source}</span></td>
       <td>${row.impressions.toLocaleString()}</td>
       <td>${row.clicks.toLocaleString()}</td>
       <td>${row.ctr}%</td>

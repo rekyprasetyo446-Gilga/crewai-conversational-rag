@@ -34,7 +34,7 @@ Start-Job -ScriptBlock {
         $c = Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue
         if ($c) {
             Start-Sleep -Seconds 1
-            Start-Process "http://localhost:8000"
+            Start-Process "msedge.exe" -ArgumentList "--app=http://localhost:8000"
             break
         }
     }

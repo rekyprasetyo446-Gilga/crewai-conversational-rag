@@ -101,6 +101,14 @@ async def app_endpoint(settings: Settings = Depends(get_settings)):
     if js_path.exists():
         return Response(content=js_path.read_text(encoding="utf-8"), media_type="application/javascript")
     return Response(status_code=404)
+
+@router.api_route("/ads.txt", methods=["GET", "HEAD"], summary="Serve ads.txt for Google AdSense")
+async def ads_txt_endpoint(settings: Settings = Depends(get_settings)):
+    ads_path = settings.templates_dir / "ads.txt"
+    if ads_path.exists():
+        return Response(content=ads_path.read_text(encoding="utf-8"), media_type="text/plain")
+    return Response(status_code=404)
+
 @router.api_route("/assets/{filename}", methods=["GET", "HEAD"], summary="Serve Assets")
 async def assets_endpoint(filename: str, settings: Settings = Depends(get_settings)):
     assets_dir = (settings.templates_dir / "assets").resolve()
