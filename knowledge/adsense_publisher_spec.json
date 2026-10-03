@@ -2,11 +2,11 @@
   "spec_name": "Google AdSense Publisher & Transaction Resolution Specification",
   "version": "2.0",
   "publisher_metadata": {
-    "publisher_id": "pub-8501247963214589",
-    "client_id": "ca-pub-8501247963214589",
+    "publisher_id": "pub-5719586361422018",
+    "client_id": "ca-pub-5719586361422018",
     "certification_authority_id": "f08c47fec0942fa0",
     "relationship_type": "DIRECT",
-    "ads_txt_line": "google.com, pub-8501247963214589, DIRECT, f08c47fec0942fa0"
+    "ads_txt_line": "google.com, pub-5719586361422018, DIRECT, f08c47fec0942fa0"
   },
   "transaction_lifecycle": {
     "step_1_earnings_accumulation": "Daily impressions, clicks, and RPM logged across ad units.",

@@ -87,3 +87,26 @@ async def icons_endpoint(filename: str, settings: Settings = Depends(get_setting
             headers={"Cache-Control": "public, max-age=86400"},
         )
     return Response(status_code=404)
+
+@router.api_route("/style.css", methods=["GET", "HEAD"], summary="Serve CSS")
+async def style_endpoint(settings: Settings = Depends(get_settings)):
+    css_path = settings.templates_dir / "style.css"
+    if css_path.exists():
+        return Response(content=css_path.read_text(encoding="utf-8"), media_type="text/css")
+    return Response(status_code=404)
+
+@router.api_route("/app.js", methods=["GET", "HEAD"], summary="Serve JS")
+async def app_endpoint(settings: Settings = Depends(get_settings)):
+    js_path = settings.templates_dir / "app.js"
+    if js_path.exists():
+        return Response(content=js_path.read_text(encoding="utf-8"), media_type="application/javascript")
+    return Response(status_code=404)
+@router.api_route("/assets/{filename}", methods=["GET", "HEAD"], summary="Serve Assets")
+async def assets_endpoint(filename: str, settings: Settings = Depends(get_settings)):
+    assets_dir = (settings.templates_dir / "assets").resolve()
+    asset_path = (assets_dir / filename).resolve()
+    if not str(asset_path).startswith(str(assets_dir)):
+        return Response(status_code=403)
+    if asset_path.exists() and asset_path.is_file():
+        return FileResponse(asset_path, headers={"Cache-Control": "public, max-age=86400"})
+    return Response(status_code=404)

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Knowledge Base Search and Retrieval Tools for CrewAI.
 Provides semantic and keyword-based search over documents in the knowledge directory.
 """
@@ -254,7 +254,7 @@ class JsonKnowledgeSearchTool(BaseTool):
 
         results = [f"### JSON Knowledge Search Results for: '{query}'\n"]
         for m in top_matches:
-            results.append(f"**Source**: `{m['file']}` â€” {m['text']}\n")
+            results.append(f"**Source**: `{m['file']}` — {m['text']}\n")
 
         return "\n---\n".join(results)
 
@@ -778,7 +778,7 @@ class AdSenseTransactionResolverTool(BaseTool):
         ledger_path = knowledge_dir / "adsense_transactions_ledger.json"
         spec_path = knowledge_dir / "adsense_publisher_spec.json"
 
-        pub_id = "pub-8501247963214589"
+        pub_id = "pub-5719586361422018"
         if spec_path.exists():
             try:
                 spec = json.loads(spec_path.read_text(encoding="utf-8"))

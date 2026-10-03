@@ -43,9 +43,9 @@
   },
   "adsense_transaction_resolver": {
     "module_enabled": true,
-    "publisher_id": "pub-8501247963214589",
+    "publisher_id": "pub-5719586361422018",
     "ads_txt_endpoint": "/ads.txt",
-    "authorized_seller_record": "google.com, pub-8501247963214589, DIRECT, f08c47fec0942fa0",
+    "authorized_seller_record": "google.com, pub-5719586361422018, DIRECT, f08c47fec0942fa0",
     "supported_currencies": [
       "USD",
       "IDR",

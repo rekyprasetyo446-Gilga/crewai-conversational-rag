@@ -4,7 +4,7 @@ and endpoints for AdSense Publisher verification, account binding, and transacti
 """
 
 from fastapi import APIRouter, Depends, Response, HTTPException, status
-from api.dependencies import get_settings
+from api.dependencies import get_settings, verify_secure_access
 from api.config import Settings
 from api.schemas.adsense import (
     AdSenseResolveRequest,
@@ -46,6 +46,7 @@ async def ads_txt_endpoint(service: AdSenseService = Depends(get_adsense_service
 
 @router.get(
     "/api/adsense/status",
+    dependencies=[Depends(verify_secure_access)],
     response_model=AdSenseStatusResponse,
     summary="AdSense Publisher Integration Status",
     description="Returns verified Publisher ID, ads.txt compliance, and transaction totals.",
@@ -56,6 +57,7 @@ async def adsense_status_endpoint(service: AdSenseService = Depends(get_adsense_
 
 @router.get(
     "/api/adsense/ledger",
+    dependencies=[Depends(verify_secure_access)],
     response_model=AdSenseLedgerResponse,
     summary="List received AdSense transactions",
     description="Returns the history of reconciled AdSense payout transactions.",
@@ -66,6 +68,7 @@ async def adsense_ledger_endpoint(service: AdSenseService = Depends(get_adsense_
 
 @router.post(
     "/api/adsense/bind",
+    dependencies=[Depends(verify_secure_access)],
     response_model=AdSenseBindResponse,
     summary="Bind user Google AdSense Publisher Account",
     description="Updates publisher ID across ads.txt, knowledge specs, .env, and runtime.",
@@ -80,6 +83,7 @@ async def adsense_bind_endpoint(
 
 @router.post(
     "/api/adsense/transaction/resolve",
+    dependencies=[Depends(verify_secure_access)],
     response_model=AdSenseResolveResponse,
     summary="Resolve and audit AdSense transaction receipt",
     description="Validates Publisher ID, parses payout metrics, and runs Gemini 3.8 audit assessment.",
@@ -93,6 +97,7 @@ async def adsense_resolve_endpoint(
 
 @router.post(
     "/api/adsense/transaction/record",
+    dependencies=[Depends(verify_secure_access)],
     response_model=AdSenseTransaction,
     summary="Record verified AdSense transaction",
     description="Persists a new AdSense transaction into the knowledge base ledger.",

@@ -28,5 +28,6 @@ class Settings(BaseModel):
     cors_origins: List[str] = Field(default_factory=lambda: ["*"])
     host: str = Field(default_factory=lambda: os.getenv("HOST", "0.0.0.0"))
     port: int = Field(default_factory=lambda: int(os.getenv("PORT", "8000")))
+    adsense_api_key: str = Field(default_factory=lambda: os.getenv("ADSENSE_API_KEY", "your-super-secret-key-to-block-spies"))
 
 settings = Settings()

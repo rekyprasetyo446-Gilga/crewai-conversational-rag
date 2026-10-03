@@ -1,13 +1,13 @@
 {
   "ledger_name": "Google AdSense Payout & Transaction Ledger",
-  "publisher_id": "pub-8501247963214589",
+  "publisher_id": "pub-5719586361422018",
   "last_updated": "2026-10-02T13:04:41.746898+00:00",
   "total_earnings_usd": 7308.45,
   "total_payouts_completed": 5,
   "transactions": [
     {
       "transaction_id": "ADS-2026-07-EFT98214",
-      "publisher_id": "pub-8501247963214589",
+      "publisher_id": "pub-5719586361422018",
       "payment_date": "2026-07-22",
       "currency": "USD",
       "gross_amount": 1250.0,
@@ -20,7 +20,7 @@
     },
     {
       "transaction_id": "ADS-2026-08-EFT10432",
-      "publisher_id": "pub-8501247963214589",
+      "publisher_id": "pub-5719586361422018",
       "payment_date": "2026-08-23",
       "currency": "USD",
       "gross_amount": 1420.5,
@@ -33,7 +33,7 @@
     },
     {
       "transaction_id": "ADS-2026-09-EFT29481",
-      "publisher_id": "pub-8501247963214589",
+      "publisher_id": "pub-5719586361422018",
       "payment_date": "2026-09-24",
       "currency": "USD",
       "gross_amount": 1600.0,
@@ -46,7 +46,7 @@
     },
     {
       "transaction_id": "ADS-2026-10-EFT48192",
-      "publisher_id": "pub-8501247963214589",
+      "publisher_id": "pub-5719586361422018",
       "payment_date": "2026-10-02",
       "currency": "USD",
       "gross_amount": 1850.0,
@@ -59,7 +59,7 @@
     },
     {
       "transaction_id": "ADS-TEST-999",
-      "publisher_id": "pub-8501247963214589",
+      "publisher_id": "pub-5719586361422018",
       "payment_date": "2026-10-02",
       "currency": "USD",
       "gross_amount": 2000.0,

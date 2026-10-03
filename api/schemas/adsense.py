@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 class AdSenseTransaction(BaseModel):
     transaction_id: str = Field(..., description="AdSense payment reference / transaction number")
-    publisher_id: str = Field(..., description="Google AdSense Publisher ID (e.g. pub-8501247963214589)")
+    publisher_id: str = Field(..., description="Google AdSense Publisher ID (e.g. pub-5719586361422018)")
     payment_date: str = Field(..., description="Date of transaction disbursement (YYYY-MM-DD)")
     currency: str = Field(default="USD", description="Currency code (USD, IDR, EUR, etc.)")
     gross_amount: float = Field(..., description="Gross advertising earnings before withholding")

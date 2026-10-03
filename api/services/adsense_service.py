@@ -25,7 +25,7 @@ class AdSenseService:
         self.knowledge_dir = knowledge_dir or settings.knowledge_dir
         self.ledger_file = self.knowledge_dir / "adsense_transactions_ledger.json"
         self.spec_file = self.knowledge_dir / "adsense_publisher_spec.json"
-        self.pub_id = "pub-8501247963214589"
+        self.pub_id = "pub-5719586361422018"
         self.cert_id = "f08c47fec0942fa0"
 
         # Load spec if present
@@ -43,7 +43,7 @@ class AdSenseService:
         return f"google.com, {self.pub_id}, DIRECT, {self.cert_id}\n"
 
     def is_valid_pub_id(self, pub_id: str) -> bool:
-        """Validates Google AdSense Publisher ID format (e.g. pub-8501247963214589)."""
+        """Validates Google AdSense Publisher ID format (e.g. pub-5719586361422018)."""
         return bool(re.match(r"^pub-\d{16}$", pub_id.strip()))
 
     def get_status(self) -> AdSenseStatusResponse:
