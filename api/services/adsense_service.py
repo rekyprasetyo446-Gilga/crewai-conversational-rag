@@ -19,6 +19,13 @@ from api.schemas.adsense import (
     AdSenseLedgerResponse,
 )
 
+import os
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+
+SCOPES = ['https://www.googleapis.com/auth/adsense.readonly']
 
 class AdSenseService:
     def __init__(self, knowledge_dir: Optional[Path] = None):
@@ -26,6 +33,7 @@ class AdSenseService:
         self.ledger_file = self.knowledge_dir / "adsense_transactions_ledger.json"
         self.spec_file = self.knowledge_dir / "adsense_publisher_spec.json"
         self.pub_id = "pub-5719586361422018"
+        self.secondary_pub_id = "pub-8501247963214589"
         self.cert_id = "f08c47fec0942fa0"
 
         # Load spec if present
@@ -40,7 +48,7 @@ class AdSenseService:
 
     def get_ads_txt_content(self) -> str:
         """Returns the RFC-compliant Authorized Digital Sellers (ads.txt) record."""
-        return f"google.com, {self.pub_id}, DIRECT, {self.cert_id}\n"
+        return f"google.com, {self.pub_id}, DIRECT, {self.cert_id}\ngoogle.com, {self.secondary_pub_id}, DIRECT, {self.cert_id}\n"
 
     def is_valid_pub_id(self, pub_id: str) -> bool:
         """Validates Google AdSense Publisher ID format (e.g. pub-5719586361422018)."""
@@ -198,6 +206,115 @@ class AdSenseService:
             status="COMPLETED",
             description="Parsed from AdSense raw transaction confirmation"
         )
+
+    def sync_real_earnings(self) -> Dict[str, Any]:
+        """Runs the Google AdSense API flow using either a Service Account or standard OAuth2."""
+        creds = None
+        service_account_path = self.knowledge_dir.parent / "service_account.json"
+        token_path = self.knowledge_dir.parent / "token.json"
+        cred_path = self.knowledge_dir.parent / "credentials.json"
+        
+        # 1. Prefer Service Account if provided (No browser popup needed)
+        if service_account_path.exists():
+            from google.oauth2 import service_account
+            creds = service_account.Credentials.from_service_account_file(
+                str(service_account_path), scopes=SCOPES
+            )
+        # 2. Fall back to standard OAuth2 Desktop flow
+        else:
+            if token_path.exists():
+                creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
+                
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                else:
+                    if not cred_path.exists():
+                        raise Exception("Neither service_account.json nor credentials.json found.")
+                    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+                    flow = InstalledAppFlow.from_client_secrets_file(str(cred_path), SCOPES)
+                    creds = flow.run_local_server(port=0)
+                
+                with open(str(token_path), 'w') as token:
+                    token.write(creds.to_json())
+
+        service = build('adsense', 'v2', credentials=creds)
+        
+        accounts = service.accounts().list().execute()
+        target_accounts = []
+        for acc in accounts.get('accounts', []):
+            if self.pub_id in acc.get('name', '') or self.secondary_pub_id in acc.get('name', ''):
+                target_accounts.append(acc)
+        
+        if not target_accounts:
+            if accounts.get('accounts'):
+                target_accounts = [accounts['accounts'][0]]
+            else:
+                raise Exception("No AdSense accounts found for this user.")
+
+        import datetime
+        today = datetime.date.today()
+        start_date = (today - datetime.timedelta(days=30))
+        
+        txns = []
+        
+        for acc in target_accounts:
+            account_name = acc['name']
+            
+            # Extract pub_id from account_name (usually accounts/pub-XXXX)
+            acc_pub_id = account_name.split('/')[-1] if '/' in account_name else self.pub_id
+
+            try:
+                report = service.accounts().reports().generate(
+                    account=account_name,
+                    dateRange='CUSTOM',
+                    startDate_year=start_date.year,
+                    startDate_month=start_date.month,
+                    startDate_day=start_date.day,
+                    endDate_year=today.year,
+                    endDate_month=today.month,
+                    endDate_day=today.day,
+                    metrics=['IMPRESSIONS', 'CLICKS', 'PAGE_VIEWS_CTR', 'PAGE_VIEWS_RPM', 'ESTIMATED_EARNINGS'],
+                    dimensions=['DATE', 'AD_UNIT_NAME'],
+                    orderBy=['-DATE']
+                ).execute()
+                
+                if 'rows' in report:
+                    for i, row in enumerate(report['rows']):
+                        date_str = row['cells'][0]['value']
+                        ad_unit = row['cells'][1]['value']
+                        impressions = int(row['cells'][2]['value'])
+                        clicks = int(row['cells'][3]['value'])
+                        ctr = float(row['cells'][4]['value']) * 100
+                        rpm = float(row['cells'][5]['value'])
+                        earnings = float(row['cells'][6]['value'])
+                        
+                        fmt_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+                        
+                        txn = AdSenseTransaction(
+                            transaction_id=f"ADS-REAL-{acc_pub_id}-{date_str}-{i}",
+                            publisher_id=acc_pub_id,
+                            payment_date=fmt_date,
+                            currency="USD",
+                            gross_amount=earnings,
+                            tax_withheld=0.0,
+                            net_amount=earnings,
+                            status="COMPLETED",
+                            description=ad_unit
+                        )
+                        txns.append(txn)
+            except Exception as e:
+                print(f"Warning: Failed to fetch report for {account_name}: {e}")
+                
+        ledger = self._load_ledger()
+        ledger["transactions"] = [t.model_dump() for t in txns]
+        total_usd = sum(t.net_amount for t in txns)
+        ledger["total_earnings_usd"] = round(total_usd, 2)
+        ledger["total_payouts_completed"] = len(txns)
+        ledger["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        
+        self.ledger_file.write_text(json.dumps(ledger, indent=2, ensure_ascii=False), encoding="utf-8")
+        return {"status": "success", "message": f"Synced {len(txns)} records from Google AdSense.", "total_earnings": round(total_usd, 2)}
 
     def _load_ledger(self) -> Dict[str, Any]:
         """Loads or creates the transactions ledger."""

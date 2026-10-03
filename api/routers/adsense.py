@@ -67,6 +67,20 @@ async def adsense_ledger_endpoint(service: AdSenseService = Depends(get_adsense_
 
 
 @router.post(
+    "/api/adsense/sync",
+    dependencies=[Depends(verify_secure_access)],
+    summary="Sync real earnings from Google AdSense",
+    description="Authenticates via OAuth 2.0 and fetches real reports.",
+)
+async def adsense_sync_endpoint(service: AdSenseService = Depends(get_adsense_service)):
+    try:
+        return service.sync_real_earnings()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+
+@router.post(
     "/api/adsense/bind",
     dependencies=[Depends(verify_secure_access)],
     response_model=AdSenseBindResponse,
