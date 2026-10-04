@@ -1,10 +1,24 @@
 import hashlib
 import os
+import secrets
 from fastapi import APIRouter, HTTPException, Response, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
+from authlib.integrations.starlette_client import OAuth, OAuthError
+from starlette.config import Config
 from api.database import get_db_connection
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
+
+# OAuth setup
+config = Config('.env')
+oauth = OAuth(config)
+
+oauth.register(
+    name='google',
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid email profile'}
+)
 
 class LoginRequest(BaseModel):
     username: str
@@ -66,3 +80,43 @@ async def register(req: LoginRequest):
         
     conn.close()
     return {"status": "success", "message": "User registered successfully"}
+
+@router.get("/login/google")
+async def login_via_google(request: Request):
+    # Port 8000 is used by default in crewairag
+    redirect_uri = "http://localhost:8000/api/auth/google/callback"
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+@router.get("/google/callback")
+async def auth_google_callback(request: Request):
+    try:
+        token = await oauth.google.authorize_access_token(request)
+        userinfo = token.get('userinfo')
+        if not userinfo:
+            userinfo = await oauth.google.parse_id_token(request, token)
+        
+        email = userinfo.get('email')
+        username = email.split('@')[0] if email else "google_user"
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Auto-register if user doesn't exist
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+        
+        if not user:
+            pwd = secrets.token_urlsafe(16)
+            hashed_pwd = hash_password(pwd)
+            cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, hashed_pwd))
+            conn.commit()
+            
+        conn.close()
+        
+        # Set session and redirect to dashboard
+        response = RedirectResponse(url="/")
+        response.set_cookie(key="session_token", value=username, httponly=True, max_age=3600*24*7)
+        return response
+        
+    except OAuthError as error:
+        return HTMLResponse(f"<h1>OAuth Error</h1><p>{error.error}</p>", status_code=400)

@@ -5,6 +5,8 @@ Provides the main application factory and app instance.
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+import os
 
 from api.config import settings
 from api.routers import chat_router, documents_router, system_router, ui_router, ai_router, adsense_router, auth_router
@@ -27,6 +29,11 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+    # Configure session middleware for OAuth
+    app.add_middleware(
+        SessionMiddleware, secret_key=os.getenv("SECRET_KEY", "super-secret-default-key")
     )
 
     # Register modular routers
