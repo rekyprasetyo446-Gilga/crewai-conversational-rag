@@ -11,6 +11,18 @@
 
 'use strict';
 
+// Ensure the user is authenticated before loading the dashboard
+(async function checkAuth() {
+    try {
+        const response = await fetch('/api/auth/check');
+        if (!response.ok) {
+            window.location.href = '/login';
+        }
+    } catch (e) {
+        window.location.href = '/login';
+    }
+})();
+
 /* ─────────────────────────────────────────
    API CONFIGURATION (FOR HOSTINGER / REMOTE DEPLOYMENT)
    Paste your ngrok or localtunnel URL here! (No trailing slash)

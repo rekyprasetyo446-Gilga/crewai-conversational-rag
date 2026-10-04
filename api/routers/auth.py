@@ -39,6 +39,12 @@ async def login(req: LoginRequest, response: Response):
     
     raise HTTPException(status_code=401, detail="Invalid username or password")
 
+@router.get("/check")
+async def check_auth(request: Request):
+    if not request.cookies.get("session_token"):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"status": "success", "username": request.cookies.get("session_token")}
+
 @router.post("/register")
 async def register(req: LoginRequest):
     conn = get_db_connection()
