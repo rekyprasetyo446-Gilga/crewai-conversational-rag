@@ -21,8 +21,8 @@ if ($conn) {
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "   Starting CrewAI Conversational RAG Server & UI        " -ForegroundColor Cyan
-Write-Host "   Web UI : http://localhost:8000                        " -ForegroundColor Green
-Write-Host "   Docs   : http://localhost:8000/docs                   " -ForegroundColor Green
+Write-Host "   Web UI : http://crewairag.com                        " -ForegroundColor Green
+Write-Host "   Docs   : http://crewairag.com/docs                   " -ForegroundColor Green
 Write-Host "   Mode   : Always Active (Auto-Recovery Enabled)        " -ForegroundColor Yellow
 Write-Host "   Agents : Full Delegation Enabled (All 3 Agents)       " -ForegroundColor Magenta
 Write-Host "==========================================================" -ForegroundColor Cyan
@@ -34,7 +34,7 @@ Start-Job -ScriptBlock {
         $c = Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue
         if ($c) {
             Start-Sleep -Seconds 1
-            Start-Process "msedge.exe" -ArgumentList "--app=http://localhost:8000"
+            Start-Process "msedge.exe" -ArgumentList "--app=http://crewairag.com"
             break
         }
     }

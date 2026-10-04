@@ -793,7 +793,7 @@ class AdSenseTransactionResolverTool(BaseTool):
                 f"- **Publisher ID**: `{pub_id}`\n"
                 f"- **Format Validity**: Valid (`^pub-\\d{{16}}$`)\n"
                 f"- **ads.txt Record**: `google.com, {pub_id}, DIRECT, f08c47fec0942fa0`\n"
-                f"- **Root Endpoint**: Served live at `http://localhost:8000/ads.txt`\n"
+                f"- **Root Endpoint**: Served live at `http://crewairag.com/ads.txt`\n"
                 f"- **Audit Model**: Gemini 3.8 Flash (`gemini/gemini-3.8-flash`)\n"
                 f"- **Compliance Status**: VERIFIED & AUTHORIZED\n"
             )

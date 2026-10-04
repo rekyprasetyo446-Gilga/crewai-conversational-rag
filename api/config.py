@@ -22,7 +22,7 @@ class Settings(BaseModel):
     knowledge_dir: Path = Field(default_factory=lambda: Path(os.getenv("KNOWLEDGE_DIR", BASE_DIR / "knowledge")))
     templates_dir: Path = Field(default_factory=lambda: Path(BASE_DIR / "templates"))
     allowed_extensions: Set[str] = Field(
-        default_factory=lambda: {".md", ".txt", ".json", ".pdf", ".csv"}
+        default_factory=lambda: {".md", ".txt", ".json", ".pdf", ".csv", ".php", ".html", ".zip", ".rar"}
     )
     max_upload_size_bytes: int = 20 * 1024 * 1024  # 20 MB
     cors_origins: List[str] = Field(default_factory=lambda: ["*"])

@@ -14,7 +14,7 @@ if (-not $ProjectRoot) { $ProjectRoot = "C:\Users\rekyp\OneDrive\Desktop\crewai_
 Set-Location $ProjectRoot
 
 $VenvPython = "$ProjectRoot\.venv\Scripts\python.exe"
-$ServerUrl = "http://localhost:8000"
+$ServerUrl = "http://crewairag.com"
 
 function Write-Log {
     param([string]$Message, [string]$Color = "Cyan")
@@ -41,7 +41,7 @@ function Test-ServerHealth {
 
     # Try localhost
     try {
-        $res = Invoke-RestMethod -Uri "http://localhost:8000/api/health" -TimeoutSec 2 -ErrorAction Stop
+        $res = Invoke-RestMethod -Uri "http://crewairag.com/api/health" -TimeoutSec 2 -ErrorAction Stop
         if ($res.status -eq "healthy") { return $true }
     } catch {}
 

@@ -11,13 +11,13 @@
   <link rel="stylesheet" href="style.css" />
   <meta property="og:title" content="CrewAI Multi-Agent Conversational RAG" />
   <meta property="og:description" content="Configure CrewAI RAG pipelines, bind your Google AdSense account, and view earnings ledger – all in one premium dashboard." />
-  <meta property="og:image" content="http://localhost:8000/assets/logo.jpg" />
-  <meta property="og:url" content="http://localhost:8000/" />
+  <meta property="og:image" content="http://crewairag.com/assets/logo.jpg" />
+  <meta property="og:url" content="http://crewairag.com/" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="CrewAI Multi-Agent Conversational RAG" />
   <meta name="twitter:description" content="Configure CrewAI RAG pipelines, bind your Google AdSense account, and view earnings ledger." />
-  <meta name="twitter:image" content="http://localhost:8000/assets/logo.jpg" />
+  <meta name="twitter:image" content="http://crewairag.com/assets/logo.jpg" />
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5719586361422018" crossorigin="anonymous"></script>
 </head>
@@ -253,6 +253,9 @@
               <option value="WEB">WEB</option>
               <option value="CSV">CSV</option>
               <option value="TXT">TXT</option>
+              <option value="PHP">PHP</option>
+              <option value="HTML">HTML</option>
+              <option value="ZIP">ZIP (Backup)</option>
             </select>
             <input type="text" class="form-input" id="new-source-path" placeholder="Path or URL..." />
             <button class="btn btn-primary" onclick="addSource()">
@@ -477,7 +480,7 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label">Redirect URI</label>
-                  <input type="text" class="form-input" id="redirect-uri" value="http://localhost:8080/callback"/>
+                  <input type="text" class="form-input" id="redirect-uri" value="http://crewairag.com/callback"/>
                 </div>
               </div>
             </div>
@@ -751,6 +754,9 @@ GOOGLE_ADSENSE_REFRESH_TOKEN=</pre>
             <label class="scope-item"><input type="checkbox" checked/><span>WEB</span></label>
             <label class="scope-item"><input type="checkbox" checked/><span>CSV</span></label>
             <label class="scope-item"><input type="checkbox" checked/><span>TXT</span></label>
+            <label class="scope-item"><input type="checkbox" checked/><span>PHP</span></label>
+            <label class="scope-item"><input type="checkbox" checked/><span>HTML</span></label>
+            <label class="scope-item"><input type="checkbox" checked/><span>ZIP</span></label>
           </div>
         </div>
         <div class="form-group">

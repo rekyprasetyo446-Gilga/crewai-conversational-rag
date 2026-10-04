@@ -64,7 +64,7 @@ Launch the web chat interface and modular FastAPI backend:
 ```powershell
 .\.venv\Scripts\python.exe web_app.py
 ```
-- **Host Network UI:** [http://10.226.157.87:8000/](http://10.226.157.87:8000/) (or `http://localhost:8000/`)
+- **Host Network UI:** [http://10.226.157.87:8000/](http://10.226.157.87:8000/) (or `http://crewairag.com/`)
 - **Interactive Swagger Docs:** [http://10.226.157.87:8000/docs](http://10.226.157.87:8000/docs)
 - **ReDoc API Reference:** [http://10.226.157.87:8000/redoc](http://10.226.157.87:8000/redoc)
 

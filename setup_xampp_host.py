@@ -109,8 +109,8 @@ def update_apache():
         proxy_config = f"""
 {vhost_marker}
 <VirtualHost *:80>
-    ServerName {HOST_IP}
-    ServerAlias localhost 127.0.0.1
+    ServerName crewairag.com
+    ServerAlias {HOST_IP} localhost 127.0.0.1
 
     ProxyPreserveHost On
     ProxyTimeout 300

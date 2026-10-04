@@ -46,7 +46,7 @@ cert = (
         x509.SubjectAlternativeName([
             x509.IPAddress(ipaddress.IPv4Address("10.226.157.87")),
             x509.IPAddress(ipaddress.IPv4Address("127.0.0.1")),
-            x509.DNSName("localhost"),
+            x509.DNSName("crewairag.com"),
         ]),
         critical=False,
     )

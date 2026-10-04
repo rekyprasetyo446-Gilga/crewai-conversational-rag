@@ -1,0 +1,39 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Knowledge base (don't upload local test data to production)
+knowledge/
+!knowledge/adsense_publisher_spec.json
+
+# IDEs
+.vscode/
+.idea/
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Git
+.git/
+.gitignore
+
+# Desktop specific wrappers
+desktop_app.py
+*.bat
+*.ps1
+*.lnk
+*.vbs
