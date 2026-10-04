@@ -12,6 +12,15 @@
 'use strict';
 
 /* ─────────────────────────────────────────
+   API CONFIGURATION (FOR HOSTINGER / REMOTE DEPLOYMENT)
+   Paste your ngrok or localtunnel URL here! (No trailing slash)
+   Example: const API_BASE_URL = 'https://modern-bear-123.loca.lt';
+   Keep it empty ('') if running locally.
+   ───────────────────────────────────────── */
+const API_BASE_URL = 'https://bright-pots-open.loca.lt';
+
+
+/* ─────────────────────────────────────────
    STATE
    ───────────────────────────────────────── */
 const state = {
@@ -51,14 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
    NAVIGATION
    ───────────────────────────────────────── */
 const TAB_META = {
-  'rag-config':   { title: 'RAG Pipeline Config',   subtitle: 'Configure your CrewAI retrieval-augmented generation setup' },
-  'agents':       { title: 'Agents Config',          subtitle: 'Define and tune your CrewAI multi-agent team' },
-  'console':      { title: 'Console',                subtitle: 'Live output and command execution for CrewAI pipelines' },
-  'adsense-bind': { title: 'Bind AdSense Account',  subtitle: 'Connect your Google AdSense account via OAuth2' },
-  'ledger':       { title: 'Earnings Ledger',        subtitle: 'View your Google AdSense revenue history and analytics' },
-  'retrieval':    { title: 'Retrieval Config',       subtitle: 'Configure document ingestion, chunking, embedding and top-K search' },
-  'aggregation':  { title: 'Aggregation Config',     subtitle: 'Define how retrieved chunks are merged and ranked before LLM generation' },
-  'settings':     { title: 'Settings',               subtitle: 'Global configuration, clear chat history, and logging options' },
+  'rag-config': { title: 'RAG Pipeline Config', subtitle: 'Configure your CrewAI retrieval-augmented generation setup' },
+  'agents': { title: 'Agents Config', subtitle: 'Define and tune your CrewAI multi-agent team' },
+  'console': { title: 'Console', subtitle: 'Live output and command execution for CrewAI pipelines' },
+  'adsense-bind': { title: 'Bind AdSense Account', subtitle: 'Connect your Google AdSense account via OAuth2' },
+  'ledger': { title: 'Earnings Ledger', subtitle: 'View your Google AdSense revenue history and analytics' },
+  'retrieval': { title: 'Retrieval Config', subtitle: 'Configure document ingestion, chunking, embedding and top-K search' },
+  'aggregation': { title: 'Aggregation Config', subtitle: 'Define how retrieved chunks are merged and ranked before LLM generation' },
+  'settings': { title: 'Settings', subtitle: 'Global configuration, clear chat history, and logging options' },
 };
 
 function initNav() {
@@ -78,7 +87,7 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${tabId}`));
 
   const meta = TAB_META[tabId] || {};
-  document.getElementById('page-title').textContent    = meta.title    || '';
+  document.getElementById('page-title').textContent = meta.title || '';
   document.getElementById('page-subtitle').textContent = meta.subtitle || '';
 }
 
@@ -94,15 +103,15 @@ function initConfig() {
 }
 
 function updateConfig() {
-  const provider  = val('llm-provider')   || 'google';
-  const model     = val('llm-model')      || 'gemini-2.0-flash';
-  const temp      = val('llm-temp')       || '0.1';
-  const tokens    = val('llm-tokens')     || '4096';
-  const vstore    = val('vector-store')   || 'chroma';
-  const collName  = val('collection-name')|| 'crewai_rag_docs';
-  const emb       = val('embed-model')    || 'text-embedding-3-small';
-  const chunk     = val('chunk-size')     || '512';
-  const overlap   = val('chunk-overlap')  || '64';
+  const provider = val('llm-provider') || 'google';
+  const model = val('llm-model') || 'gemini-2.0-flash';
+  const temp = val('llm-temp') || '0.1';
+  const tokens = val('llm-tokens') || '4096';
+  const vstore = val('vector-store') || 'chroma';
+  const collName = val('collection-name') || 'crewai_rag_docs';
+  const emb = val('embed-model') || 'text-embedding-3-small';
+  const chunk = val('chunk-size') || '512';
+  const overlap = val('chunk-overlap') || '64';
 
   const sources = Array.from(document.querySelectorAll('.source-path')).map(s => s.textContent);
   const srcYaml = sources.map(s => `    - "${s}"`).join('\n');
@@ -213,42 +222,42 @@ function removeSource(btn) {
    ───────────────────────────────────────── */
 const MOCK_COMMANDS = {
   'crewai run': [
-    { type:'info',    msg: 'Starting CrewAI crew...' },
-    { type:'info',    msg: 'Initializing RAG pipeline with ChromaDB...' },
-    { type:'info',    msg: 'Loading embeddings model: text-embedding-3-small' },
-    { type:'success', msg: 'Vector store loaded. 1,248 documents indexed.' },
-    { type:'info',    msg: 'Agent [Researcher] starting task...' },
-    { type:'info',    msg: 'Retrieving top-5 relevant chunks for query...' },
-    { type:'success', msg: 'Researcher Agent completed. 5 chunks retrieved.' },
-    { type:'info',    msg: 'Agent [Analyst] analyzing data...' },
-    { type:'success', msg: 'Revenue analysis complete. RPM increased by 12.4%.' },
-    { type:'info',    msg: 'Agent [Writer] generating report...' },
-    { type:'success', msg: 'Report generated: adsense_report_oct2026.md' },
-    { type:'success', msg: 'Crew finished in 14.2s. All tasks complete.' },
+    { type: 'info', msg: 'Starting CrewAI crew...' },
+    { type: 'info', msg: 'Initializing RAG pipeline with ChromaDB...' },
+    { type: 'info', msg: 'Loading embeddings model: text-embedding-3-small' },
+    { type: 'success', msg: 'Vector store loaded. 1,248 documents indexed.' },
+    { type: 'info', msg: 'Agent [Researcher] starting task...' },
+    { type: 'info', msg: 'Retrieving top-5 relevant chunks for query...' },
+    { type: 'success', msg: 'Researcher Agent completed. 5 chunks retrieved.' },
+    { type: 'info', msg: 'Agent [Analyst] analyzing data...' },
+    { type: 'success', msg: 'Revenue analysis complete. RPM increased by 12.4%.' },
+    { type: 'info', msg: 'Agent [Writer] generating report...' },
+    { type: 'success', msg: 'Report generated: adsense_report_oct2026.md' },
+    { type: 'success', msg: 'Crew finished in 14.2s. All tasks complete.' },
   ],
   'crewai kickoff': [
-    { type:'info',    msg: 'Kicking off CrewAI pipeline...' },
-    { type:'success', msg: 'Pipeline started successfully.' },
+    { type: 'info', msg: 'Kicking off CrewAI pipeline...' },
+    { type: 'success', msg: 'Pipeline started successfully.' },
   ],
   'help': [
-    { type:'info', msg: 'Available commands: crewai run | crewai kickoff | crewai train | crewai test | clear | help' },
+    { type: 'info', msg: 'Available commands: crewai run | crewai kickoff | crewai train | crewai test | clear | help' },
   ],
   'clear': [],
   'crewai train': [
-    { type:'info',    msg: 'Training mode enabled. n_iterations=3' },
-    { type:'warn',    msg: 'Training may take a while. Running iteration 1/3...' },
-    { type:'success', msg: 'Training complete. Model performance improved by 8.3%.' },
+    { type: 'info', msg: 'Training mode enabled. n_iterations=3' },
+    { type: 'warn', msg: 'Training may take a while. Running iteration 1/3...' },
+    { type: 'success', msg: 'Training complete. Model performance improved by 8.3%.' },
   ],
   'crewai test': [
-    { type:'info',    msg: 'Running test suite...' },
-    { type:'success', msg: 'All 12 agent tests passed. 0 failures.' },
+    { type: 'info', msg: 'Running test suite...' },
+    { type: 'success', msg: 'All 12 agent tests passed. 0 failures.' },
   ],
 };
 
 function initConsole() {
-  appendLog('info',    'Console ready. Type "help" for available commands.');
-  appendLog('info',    'RAG pipeline: IDLE');
-  appendLog('warn',    'AdSense account not connected.');
+  appendLog('info', 'Console ready. Type "help" for available commands.');
+  appendLog('info', 'RAG pipeline: IDLE');
+  appendLog('warn', 'AdSense account not connected.');
   appendLog('success', 'Vector store: ChromaDB loaded.');
 }
 
@@ -358,14 +367,14 @@ function rerenderConsole() {
 
 const PUBLISHER_ACCOUNTS = {
   'pub-5719586361422018': {
-    label:    'Primary Account',
-    gmail:    'rekyprasetyo446@gmail.com',
-    name:     'Reky Prasetyo',
+    label: 'Primary Account',
+    gmail: 'rekyprasetyo446@gmail.com',
+    name: 'Reky Prasetyo',
     currency: 'USD',
     timezone: 'Asia/Jakarta',
-    status:   'Active',
-    dotId:    'dot-5719',
-    infoId:   'account-info-5719',
+    status: 'Active',
+    dotId: 'dot-5719',
+    infoId: 'account-info-5719',
     connected: false,
   },
 };
@@ -402,10 +411,10 @@ function switchGoogleAccount() {
 }
 
 function connectAdSense() {
-  const clientId    = document.getElementById('client-id').value.trim();
+  const clientId = document.getElementById('client-id').value.trim();
   const clientSecret = document.getElementById('client-secret').value.trim();
   const redirectUri = document.getElementById('redirect-uri').value.trim();
-  const gmail       = 'rekyprasetyo446@gmail.com';
+  const gmail = 'rekyprasetyo446@gmail.com';
 
   if (!clientId || !clientSecret) {
     showToast('Please fill in Client ID and Client Secret first.', 'error');
@@ -465,7 +474,7 @@ function bindAccountUI(clientId, clientSecret, redirectUri, pubId) {
 
   // Per-pub account info card
   const expiryDate = new Date(Date.now() + 3600 * 1000).toLocaleTimeString();
-  const fakeToken   = 'ya29.' + randomHex(32);
+  const fakeToken = 'ya29.' + randomHex(32);
   const fakeRefresh = '1//0g' + randomHex(28);
   const infoEl = document.getElementById(account.infoId);
   if (infoEl) {
@@ -513,7 +522,7 @@ function bindAccountUI(clientId, clientSecret, redirectUri, pubId) {
   });
 
   // Update combined .env preview
-  const allConnected = Object.entries(PUBLISHER_ACCOUNTS).filter(([,a]) => a.connected);
+  const allConnected = Object.entries(PUBLISHER_ACCOUNTS).filter(([, a]) => a.connected);
   const envEl = document.getElementById('env-preview');
   if (envEl) {
     envEl.textContent = `# Google AdSense Credentials (.env)
@@ -536,7 +545,7 @@ GOOGLE_ADSENSE_REFRESH_TOKEN=${fakeRefresh}`;
   }
 
   showToast(`${pubId} bound to rekyprasetyo446@gmail.com`, 'success');
-  
+
   // Re-check chat config state now that a publisher is bound
   checkAdSenseConfig();
 
@@ -560,9 +569,9 @@ GOOGLE_ADSENSE_REFRESH_TOKEN=${fakeRefresh}`;
 
 function bindSecondaryAccountUI(pubId, clientId, redirectUri) {
   const account = PUBLISHER_ACCOUNTS[pubId];
-  const fakeToken2   = 'ya29.' + randomHex(32);
+  const fakeToken2 = 'ya29.' + randomHex(32);
   const fakeRefresh2 = '1//0g' + randomHex(28);
-  const expiryDate2  = new Date(Date.now() + 3600 * 1000).toLocaleTimeString();
+  const expiryDate2 = new Date(Date.now() + 3600 * 1000).toLocaleTimeString();
   const infoEl2 = document.getElementById(account.infoId);
   if (infoEl2) {
     infoEl2.innerHTML = `
@@ -624,15 +633,15 @@ function generateLedgerData() {
   const sources = ['Google Search', 'Direct App Traffic', 'Social Referral', 'Web Crawlers', 'Push Notifications'];
   const data = [];
   for (let d = 1; d <= 30; d++) {
-    const date = `2026-10-${String(d).padStart(2,'0')}`;
+    const date = `2026-10-${String(d).padStart(2, '0')}`;
     const unit = units[Math.floor(Math.random() * units.length)];
     const source = sources[Math.floor(Math.random() * sources.length)];
     const impressions = Math.floor(Math.random() * 18000 + 5000);
-    const clicks      = Math.floor(impressions * (Math.random() * 0.015 + 0.005));
-    const ctr         = (clicks / impressions * 100).toFixed(2);
-    const rpm         = (Math.random() * 4 + 1.5).toFixed(2);
-    const earnings    = (impressions / 1000 * parseFloat(rpm)).toFixed(2);
-    const status      = d <= 25 ? 'finalized' : 'estimated';
+    const clicks = Math.floor(impressions * (Math.random() * 0.015 + 0.005));
+    const ctr = (clicks / impressions * 100).toFixed(2);
+    const rpm = (Math.random() * 4 + 1.5).toFixed(2);
+    const earnings = (impressions / 1000 * parseFloat(rpm)).toFixed(2);
+    const status = d <= 25 ? 'finalized' : 'estimated';
     data.push({ date, unit, source, impressions, clicks, ctr, rpm, earnings, status });
   }
   return data.sort((a, b) => b.date.localeCompare(a.date));
@@ -663,14 +672,23 @@ function renderLedger() {
   });
 
   // Pagination
-  const total  = state.ledgerData.length;
-  const pages  = Math.ceil(total / state.ledgerPerPage);
+  const total = state.ledgerData.length;
+  const pages = Math.ceil(total / state.ledgerPerPage);
   const infoEl = document.getElementById('ledger-info');
   if (infoEl) infoEl.textContent = `Showing ${start + 1}–${Math.min(start + state.ledgerPerPage, total)} of ${total} entries`;
 
   const pagEl = document.getElementById('pagination');
   if (pagEl) {
     pagEl.innerHTML = '';
+    
+    // Prev Button
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'page-btn';
+    prevBtn.innerHTML = '&laquo; Prev';
+    prevBtn.disabled = state.ledgerPage === 1;
+    prevBtn.onclick = () => { if (state.ledgerPage > 1) { state.ledgerPage--; renderLedger(); } };
+    pagEl.appendChild(prevBtn);
+
     for (let i = 1; i <= pages; i++) {
       const btn = document.createElement('button');
       btn.className = `page-btn${i === state.ledgerPage ? ' active' : ''}`;
@@ -678,6 +696,14 @@ function renderLedger() {
       btn.onclick = () => { state.ledgerPage = i; renderLedger(); };
       pagEl.appendChild(btn);
     }
+    
+    // Next Button
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'page-btn';
+    nextBtn.innerHTML = 'Next &raquo;';
+    nextBtn.disabled = state.ledgerPage === pages;
+    nextBtn.onclick = () => { if (state.ledgerPage < pages) { state.ledgerPage++; renderLedger(); } };
+    pagEl.appendChild(nextBtn);
   }
 }
 
@@ -694,9 +720,9 @@ async function syncRealLedger() {
     btn.textContent = 'Syncing (Check Browser)...';
     btn.disabled = true;
   }
-  
+
   try {
-    const res = await fetch('/api/adsense/sync', { 
+    const res = await fetch(`${API_BASE_URL}/api/adsense/sync`, {
       method: 'POST',
       headers: {
         'X-AdSense-SpyBlock-Key': 'AIzaSyCJbR2BFPkJRZy9LEmZdRa6UhiAq6XZy7U'
@@ -706,14 +732,14 @@ async function syncRealLedger() {
       const err = await res.json();
       throw new Error(err.detail || err.message || 'OAuth failed');
     }
-    
-    const ledgerRes = await fetch('/api/adsense/ledger', {
+
+    const ledgerRes = await fetch(`${API_BASE_URL}/api/adsense/ledger`, {
       headers: {
         'X-AdSense-SpyBlock-Key': 'AIzaSyCJbR2BFPkJRZy9LEmZdRa6UhiAq6XZy7U'
       }
     });
     const data = await ledgerRes.json();
-    
+
     if (data.transactions && data.transactions.length > 0) {
       state.ledgerData = data.transactions.map(t => ({
         date: t.payment_date,
@@ -730,10 +756,10 @@ async function syncRealLedger() {
     } else {
       state.ledgerData = [];
     }
-    
+
     state.ledgerPage = 1;
     renderLedger();
-    
+
     appendLog('success', 'Real AdSense earnings synced successfully!');
     showToast('Real Earnings Synced', 'success');
   } catch (err) {
@@ -778,21 +804,21 @@ function checkAdSenseConfig() {
   const inputEl = document.getElementById('chat-input-field');
   const btnEl = document.getElementById('chat-send-btn');
   const winEl = document.getElementById('chat-window');
-  
+
   if (!statusEl || !inputEl) return;
 
   // Simulate checking for pub-5719586361422018
   const primaryPub = PUBLISHER_ACCOUNTS['pub-5719586361422018'];
-  
+
   if (primaryPub && primaryPub.connected) {
     statusEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:2px"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> pub-5719... Active`;
     statusEl.style.background = 'rgba(16,185,129,0.1)';
     statusEl.style.color = 'var(--green)';
     statusEl.style.border = '1px solid rgba(16,185,129,0.3)';
-    
+
     inputEl.disabled = false;
     btnEl.disabled = false;
-    
+
     // Welcome message if window only has the loading message
     if (winEl && winEl.children.length === 1 && winEl.children[0].classList.contains('system')) {
       winEl.innerHTML = `
@@ -806,10 +832,10 @@ function checkAdSenseConfig() {
     statusEl.style.background = 'rgba(248,113,113,0.1)';
     statusEl.style.color = '#f87171';
     statusEl.style.border = '1px solid rgba(248,113,113,0.3)';
-    
+
     inputEl.disabled = true;
     btnEl.disabled = true;
-    
+
     if (winEl && winEl.children.length === 1 && winEl.children[0].classList.contains('system')) {
       winEl.children[0].querySelector('.chat-bubble').innerHTML = `
         <span style="color:#f87171">Connection Refused</span><br/>
@@ -853,7 +879,7 @@ function sendChatMessage() {
       <i>(This is a simulated response. In production, this will hit the CrewAI backend endpoint.)</i>
     </div>`;
     winEl.scrollTop = winEl.scrollHeight;
-    
+
     inputEl.disabled = false;
     document.getElementById('chat-send-btn').disabled = false;
     inputEl.focus();
@@ -896,8 +922,8 @@ function showToast(msg, type = 'info') {
 
 function downloadText(text, filename) {
   const blob = new Blob([text], { type: 'text/plain' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
   a.href = url;
   a.download = filename;
   a.click();
@@ -910,7 +936,7 @@ function downloadText(text, filename) {
    ───────────────────────────────────────── */
 const _origSwitchTab = switchTab;
 // Override switchTab to also handle panels with style="display:none"
-window.switchTab = function(tabId) {
+window.switchTab = function (tabId) {
   // Hide all extra panels
   document.querySelectorAll('.tab-panel').forEach(p => {
     if (p.style.display !== undefined) {
@@ -924,7 +950,7 @@ window.switchTab = function(tabId) {
   const meta = TAB_META[tabId] || {};
   const pt = document.getElementById('page-title');
   const ps = document.getElementById('page-subtitle');
-  if (pt) pt.textContent = meta.title    || '';
+  if (pt) pt.textContent = meta.title || '';
   if (ps) ps.textContent = meta.subtitle || '';
 
   // Update settings stats when switching to settings tab
@@ -948,17 +974,17 @@ function initSettings() {
 }
 
 function renderHistoryStats() {
-  const msgEl     = document.getElementById('hist-msg-count');
-  const sessEl    = document.getElementById('hist-session-count');
-  const sizeEl    = document.getElementById('hist-size');
-  const clearEl   = document.getElementById('hist-last-clear');
+  const msgEl = document.getElementById('hist-msg-count');
+  const sessEl = document.getElementById('hist-session-count');
+  const sizeEl = document.getElementById('hist-size');
+  const clearEl = document.getElementById('hist-last-clear');
 
-  if (msgEl)   msgEl.textContent  = state.chatHistory.length;
-  if (sessEl)  sessEl.textContent = state.sessionCount;
+  if (msgEl) msgEl.textContent = state.chatHistory.length;
+  if (sessEl) sessEl.textContent = state.sessionCount;
 
   // Approximate size
   const bytes = JSON.stringify(state.chatHistory).length;
-  if (sizeEl)  sizeEl.textContent = bytes > 1024
+  if (sizeEl) sizeEl.textContent = bytes > 1024
     ? `${(bytes / 1024).toFixed(1)} KB`
     : `${bytes} B`;
 

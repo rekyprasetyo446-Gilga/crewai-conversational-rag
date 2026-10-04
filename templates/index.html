@@ -18,6 +18,7 @@
   <meta name="twitter:title" content="CrewAI Multi-Agent Conversational RAG" />
   <meta name="twitter:description" content="Configure CrewAI RAG pipelines, bind your Google AdSense account, and view earnings ledger." />
   <meta name="twitter:image" content="http://crewairag.com/assets/logo.jpg" />
+  <meta name="google-adsense-account" content="ca-pub-5719586361422018">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5719586361422018" crossorigin="anonymous"></script>
 </head>
@@ -604,7 +605,7 @@ GOOGLE_ADSENSE_REFRESH_TOKEN=</pre>
             <button class="btn btn-primary" onclick="refreshLedger()">Mock Data</button>
           </div>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap" id="ledger-table-wrap">
           <table class="ledger-table" id="ledger-table">
             <thead>
               <tr>
@@ -622,6 +623,10 @@ GOOGLE_ADSENSE_REFRESH_TOKEN=</pre>
             </thead>
             <tbody id="ledger-body"></tbody>
           </table>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px; margin-bottom: 12px;">
+           <button onclick="document.getElementById('ledger-table-wrap').scrollBy({left: -200, behavior: 'smooth'})" class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;">&larr; Geser Kiri</button>
+           <button onclick="document.getElementById('ledger-table-wrap').scrollBy({left: 200, behavior: 'smooth'})" class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;">Geser Kanan &rarr;</button>
         </div>
         <div class="table-footer">
           <span id="ledger-info">Loading...</span>
