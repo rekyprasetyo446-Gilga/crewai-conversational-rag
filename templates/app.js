@@ -725,7 +725,8 @@ async function syncRealLedger() {
     const res = await fetch(`${API_BASE_URL}/api/adsense/sync`, {
       method: 'POST',
       headers: {
-        'X-AdSense-SpyBlock-Key': 'AIzaSyCJbR2BFPkJRZy9LEmZdRa6UhiAq6XZy7U'
+        'X-AdSense-SpyBlock-Key': 'AIzaSyCJbR2BFPkJRZy9LEmZdRa6UhiAq6XZy7U',
+        'Bypass-Tunnel-Reminder': 'true'
       }
     });
     if (!res.ok) {
@@ -735,7 +736,8 @@ async function syncRealLedger() {
 
     const ledgerRes = await fetch(`${API_BASE_URL}/api/adsense/ledger`, {
       headers: {
-        'X-AdSense-SpyBlock-Key': 'AIzaSyCJbR2BFPkJRZy9LEmZdRa6UhiAq6XZy7U'
+        'X-AdSense-SpyBlock-Key': 'AIzaSyCJbR2BFPkJRZy9LEmZdRa6UhiAq6XZy7U',
+        'Bypass-Tunnel-Reminder': 'true'
       }
     });
     const data = await ledgerRes.json();
