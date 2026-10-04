@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.config import settings
-from api.routers import chat_router, documents_router, system_router, ui_router, ai_router, adsense_router
+from api.routers import chat_router, documents_router, system_router, ui_router, ai_router, adsense_router, auth_router
 
 
 def create_app() -> FastAPI:
@@ -36,6 +36,7 @@ def create_app() -> FastAPI:
     app.include_router(system_router)
     app.include_router(ai_router)
     app.include_router(adsense_router)
+    app.include_router(auth_router)
 
     return app
 
