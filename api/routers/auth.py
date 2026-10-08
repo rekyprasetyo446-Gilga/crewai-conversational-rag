@@ -84,7 +84,7 @@ async def register(req: LoginRequest):
 @router.get("/login/google")
 async def login_via_google(request: Request):
     # Port 8000 is used by default in crewairag
-    redirect_uri = "http://localhost:8000/api/auth/google/callback"
+    redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/google/callback")
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @router.get("/google/callback")
