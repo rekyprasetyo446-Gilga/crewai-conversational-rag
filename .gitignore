@@ -29,3 +29,7 @@ scratch/
 # Backup files
 *.bak
 *.zip
+
+# Google API Secrets
+credentials.json
+token.json
