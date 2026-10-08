@@ -29,7 +29,7 @@
    Example: const API_BASE_URL = 'https://modern-bear-123.loca.lt';
    Keep it empty ('') if running locally.
    ───────────────────────────────────────── */
-const API_BASE_URL = 'https://bright-pots-open.loca.lt';
+const API_BASE_URL = '';
 
 
 /* ─────────────────────────────────────────
