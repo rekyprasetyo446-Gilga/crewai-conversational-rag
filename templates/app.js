@@ -14,7 +14,7 @@
 // Ensure the user is authenticated before loading the dashboard
 (async function checkAuth() {
     try {
-        const response = await fetch('/api/auth/check');
+        const response = await fetch(`${API_BASE_URL}/api/auth/check`);
         if (!response.ok) {
             window.location.href = '/login';
         }
@@ -29,7 +29,7 @@
    Example: const API_BASE_URL = 'https://modern-bear-123.loca.lt';
    Keep it empty ('') if running locally.
    ───────────────────────────────────────── */
-const API_BASE_URL = '';
+const API_BASE_URL = 'http://localhost:8000';
 
 
 /* ─────────────────────────────────────────

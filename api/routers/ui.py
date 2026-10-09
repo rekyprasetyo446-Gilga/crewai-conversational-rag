@@ -120,6 +120,13 @@ async def ads_txt_endpoint(settings: Settings = Depends(get_settings)):
         return Response(content=ads_path.read_text(encoding="utf-8"), media_type="text/plain")
     return Response(status_code=404)
 
+@router.api_route("/robots.txt", methods=["GET", "HEAD"], summary="Serve robots.txt")
+async def robots_txt_endpoint(settings: Settings = Depends(get_settings)):
+    robots_path = settings.templates_dir / "robots.txt"
+    if robots_path.exists():
+        return Response(content=robots_path.read_text(encoding="utf-8"), media_type="text/plain")
+    return Response(status_code=404)
+
 @router.api_route("/assets/{filename}", methods=["GET", "HEAD"], summary="Serve Assets")
 async def assets_endpoint(filename: str, settings: Settings = Depends(get_settings)):
     assets_dir = (settings.templates_dir / "assets").resolve()

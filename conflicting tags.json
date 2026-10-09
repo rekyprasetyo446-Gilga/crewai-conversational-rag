@@ -1,0 +1,34 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-09T00:00:00.000Z",
+  "containerVersion": {
+    "accountId": "0",
+    "containerId": "0",
+    "container": {
+      "publicId": "GTM-TS368DGJ",
+      "usageContext": ["WEB"]
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Google AdSense Script",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "template",
+            "key": "html",
+            "value": "<script async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5719586361422018\" crossorigin=\"anonymous\"></script>"
+          },
+          {
+            "type": "boolean",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": ["2147479553"]
+      }
+    ]
+  }
+}
