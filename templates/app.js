@@ -11,17 +11,7 @@
 
 'use strict';
 
-// Ensure the user is authenticated before loading the dashboard
-// (async function checkAuth() {
-//     try {
-//         const response = await fetch(`${API_BASE_URL}/api/auth/check`);
-//         if (!response.ok) {
-//             window.location.href = '/login.html';
-//         }
-//     } catch (e) {
-//         window.location.href = '/login.html';
-//     }
-// })();
+// Authentication disabled - Direct access to dashboard
 
 /* ─────────────────────────────────────────
    API CONFIGURATION (FOR HOSTINGER / REMOTE DEPLOYMENT)
