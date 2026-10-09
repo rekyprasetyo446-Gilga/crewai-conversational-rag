@@ -12,16 +12,16 @@
 'use strict';
 
 // Ensure the user is authenticated before loading the dashboard
-(async function checkAuth() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/check`);
-        if (!response.ok) {
-            window.location.href = '/login';
-        }
-    } catch (e) {
-        window.location.href = '/login';
-    }
-})();
+// (async function checkAuth() {
+//     try {
+//         const response = await fetch(`${API_BASE_URL}/api/auth/check`);
+//         if (!response.ok) {
+//             window.location.href = '/login.html';
+//         }
+//     } catch (e) {
+//         window.location.href = '/login.html';
+//     }
+// })();
 
 /* ─────────────────────────────────────────
    API CONFIGURATION (FOR HOSTINGER / REMOTE DEPLOYMENT)
